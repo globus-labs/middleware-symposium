@@ -1,0 +1,14 @@
+*.aux
+*.dvi
+*.log
+*.out
+*.zip
+*.cut
+*.bbl
+*.blg
+*.bak
+*.sav
+*.synctex.gz
+*.tex.backup
+main.pdf
+wosc.pdf
