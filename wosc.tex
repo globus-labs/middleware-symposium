@@ -111,15 +111,15 @@ SLAs.
 % microscopy studies must first determine an image's quality before processing it, making every low-quality image transferred 
 % a sunk cost. 
 Advances in scientific instruments, computational capabilities, and the proliferation of IoT devices
-have increased the volume, velocity, and variety of research data. 
-As a result, researchers are increasingly adopting data-driven research practices, 
+have increased the volume, velocity, and variety of data. 
+As a result, organizations are increasingly adopting data-driven enterprise and research practices, 
 in which data are collected, stored for long periods of time, shared, 
 and reused.
-Unfortunately, these factors create new research data management challenges, 
+Unfortunately, these factors create new data management challenges, 
 not least of which is the need for data to be adequately described
 for it to be generally useful. Without descriptive metadata, data
 may become unidentifiable, siloed, and in general, 
-not useful to either the researchers who own the data or the broader scientific community. 
+not useful to either one's own organization or the broader open-source community. 
 Unfortunately, organizing and annotating data is a time-consuming process
 and the gulf between data generation rates
 and the finite management capabilities of researchers
@@ -128,27 +128,32 @@ new methods are required to automate the extraction and association
 of rich metadata that describe not only the data themselves, but
 also their structure and format, provenance, and administrative information.
 
-Data lakes have become a popular paradigm for managing large and 
-heterogeneous data from various sources. 
-A data lake contains a collection of data in different formats, 
-accompanied by metadata describing those data. 
-Unfortunately, the data deluge and the desire to store all data
-for eternity can quickly turn a data lake into a ``data 
-swamp''~\cite{skluzacek2018skluma}---a term used to describe the situation in which the data 
-stored in the data lake lack the metadata necessary to be 
-discoverable, understandable, and usable. Without automated and scalable 
-approaches to derive metadata from scientific data, the utility of 
-these data are reduced. This problem is 
-especially prevalent in science as 
-datasets can be enormous (many petabytes),
-are created and shared by dynamic collaborations, 
-are often collected under tight time constraints where data management processes become afterthoughts, 
-and for which preservation is important for purposes of reproducibility and reuse. 
+%Data lakes have become a popular paradigm for managing large and 
+%heterogeneous data from various sources. 
+%A data lake contains a collection of data in different formats, 
+%accompanied by metadata describing those data. 
+%Unfortunately, the data deluge and the desire to store all data
+%for eternity can quickly turn a data lake into a ``data 
+%swamp''~\cite{skluzacek2018skluma}---a term used to describe the situation in which the data 
+%stored in the data lake lack the metadata necessary to be 
+%discoverable, understandable, and usable. Without automated and scalable 
+%approaches to derive metadata from scientific data, the utility of 
+%these data are reduced. This problem is 
+%especially prevalent in science as 
+%datasets can be enormous (many petabytes),
+%are created and shared by dynamic collaborations, 
+%are often collected under tight time constraints where data management processes become afterthoughts, 
+%and for which preservation is important for purposes of reproducibility and reuse. 
 
-Extracting metadata from scientific data is a complex task. 
-Scientific repositories may exceed millions of files and petabytes of data;
+\tyler{Add note here about the edge}
+Extracting metadata from enterprise and scientific data is a complex task. 
+Data repositories may exceed millions of files and petabytes of data;
 data are created at different rates, by different people; 
 and there are an enormous number of data formats and conventions. 
+Some~\cite{egan2003vizier, welter2013nhgri, irods, dataverse} have created 
+systems to manage metadata catalogs that
+support the organization and discovery of research data. However, these approaches typically 
+require that users provide metadata and that curators continue to organize data over time.
 While metadata can be rapidly extracted from some data types, others, such as
 images and large hierarchical file formats can require the use of multiple extraction methods.  
 As a result, the metadata extraction process must be scalable to process large numbers
@@ -164,6 +169,18 @@ they are hosted.FaaS allows users to register programming functions with predefi
 Registered functions can subsequently be invoked many times
 without the need to provision or scale any infrastructure.
 
+\tyler{need to mention the name of our system first}
+We are not the first to construct an architecture to automatically extract metadata from repositories. 
+For example, ScienceSearch~\cite{rodrigo2018sciencesearch} uses 
+machine learning techniques to extract metadata from a dataset served by the National Center for Electron Microscopy (NCEM). 
+Most of data in this use case are micrograph images, but additional contextual metadata are derived from file system 
+data and free text proposals and publications. Like \name{}, ScienceSearch 
+provides a means for users to extensibly switch metadata extractors to suit a given dataset.  
+Brown Dog~\cite{padhy2015brown} is an extensible metadata extraction platform, 
+providing metadata extraction services for a number of 
+disciplines ranging from materials science to social science.
+Unlike \name{}, Brown Dog requires that files are uploaded for extraction. 
+
 In this paper we propose the use of FaaS for mapping the metadata extraction problem to a 
 collection of granular metadata extractor functions. 
 We describe how such a model can support the flexibility, scalability, and extensibility required
@@ -175,49 +192,22 @@ metadata extractors to the edge systems on which the scientific data reside.
 
 Our prototype system, \name{}, provides high-throughput and on-demand metadata 
 extraction that enables the automated creation of rich, searchable data lakes from previously unsearchable data swamps. 
-\name{} implements dynamic metadata extraction workflows comprised of serverless functions that may be 
-executed in the cloud or at the edge. \name{} runs as a centralized management
-service that orchestrates the crawling, transfer (when necessary), and execution of 
-metadata extraction functions. % and outputs a rich metadata. 
 \name{} uses the \funcx{} serverless supercomputing platform~\cite{chard2019serverless}
 to execute functions across diverse and distributed computing infrastructure.
+The contributions of \name{} are the following: 
 
 
 
-%The primary goal of this work is the following: 
-%
-%implement and evaluate a serverless metadata extraction system
-%that allows users to deploy endpoints at the edge on which metadata extraction functions can be run
-%
-%creating a comprehensive, searchable index of files across multiple edge devices
-%
-%explore how the system can intelligently self-optimize subject to a number of constraints, including compute time, 
-%current allocation availability, monetary cost, and security requirements (e.g., HIPAA).
+The primary goal of this work is the following: 
 
-\name{} builds upon a large body of work in both metadata extraction systems and serverless computing.
-Others~\cite{egan2003vizier, welter2013nhgri, irods, dataverse} have created 
-systems to manage metadata catalogs that
-support the organization and discovery of research data. However, these approaches typically 
-require that users provide metadata and that curators continue to organize data over time. 
-A number of systems exist for automatically extracting metadata from repositories. 
-For example, ScienceSearch~\cite{rodrigo2018sciencesearch} uses 
-machine learning techniques to extract metadata from a dataset served by the National Center for Electron Microscopy (NCEM). 
-Most of data in this use case are micrograph images, but additional contextual metadata are derived from file system 
-data and free text proposals and publications. Like \name{}, ScienceSearch 
-provides a means for users to extensibly switch metadata extractors to suit a given dataset.  
-Brown Dog~\cite{padhy2015brown} is an extensible metadata extraction platform, 
-providing metadata extraction services for a number of 
-disciplines ranging from materials science to social science.
-Unlike \name{}, Brown Dog requires that files are uploaded for extraction. 
+\begin{itemize}
+\item Implement and evaluate a serverless metadata extraction system
+\item Enable users to deploy endpoints and invoke metadata extraction functions on the edge
+\item Create comprehensive, searchable indexes of files across multiple devices
+\item Explore intelligent self-optimization methods subject to a number of constraints, including compute time, 
+current allocation availability, monetary cost, and security requirements (e.g., HIPAA).
+\end{itemize}
 
-While most related research performs metadata extraction to enable search,
-\name{}-like systematic sweeps across repositories can also be used for analysis.  
-For example, the Big Data Quality Control (BDQC) framework~\cite{deutsch2018bdqc} sweeps over 
-large collections of biomedical data without regard to their meaning (domain-blind analysis) with the goal of
-identifying anomalies.
-BDQC employs a pipeline of extractors to derive properties of imaging, genomic, and clinical data.
-While BDQC is implemented as a standalone system, the approach taken would be equally 
-viable in \name{}.
 
 \section{Approach}
 \label{sec:approach}
