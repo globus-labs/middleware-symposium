@@ -211,12 +211,78 @@ current allocation availability, monetary cost, and security requirements (e.g.,
 
 \section{Approach}
 \label{sec:approach}
-Outline: 
-- funcX: deploy endpoints on edge. 
-     - Parsl: automatically provision necessary resources. 
-- metadata extractors as functions w/ container runtimes. 
-- Globus Auth for access control. 
-- Automate (metadata extraction as part of automated workflows). 
+
+\name{} is implemented as a service via which users can submit
+requests to extract metadata from a collection of files.
+\name{} first crawls the specified files and determines
+an initial set of extractors to apply to them. 
+As outlined above, the extractors may be executed
+either centrally on the \name{} server or remotely alongside
+the data. As processing continues, \name{} assembles 
+a metadata document for each file and dynamically selects
+other extractors to apply.
+
+%\ryan{Explain here that we have the ability to do edge but our prototype leverages petrelkube -- which is an edge device for all 
+%intents and purposes as we still fire jobs into funcx}
+
+%\name{} is implemented as a RESTful web service and is 
+\name{} is deployed on an Amazon Web Services (AWS) and makes use
+of various services. The main \name{} service
+is deployed on an AWS Elastic Compute Cloud instance.
+\name{} manages state in an AWS Relational Database Service (RDS)
+instance. Each extraction request is stored in the database
+and the state is updated throughout the extraction process. 
+\name{} is able to send the derived metadata to an external
+metadata catalog such as a Globus Search index.
+The \name{} architecture is shown in Figure~\ref{fig:arch}.
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[scale=0.3]{figs/new-arch.png}
+	\caption{Overview of the \name{} architecture. For \textit{Site A} functions are transmitted to the remote resource and performed on local computing resources, returning metadata to the \name{} service. \textit{Site B} lacks suitable local
+	computing capabilities, requiring data to be staged to \name{} for analysis.}
+	\label{fig:arch}
+\end{figure}
+
+\subsubsection{Metadata Extractors}
+\name{} is designed to execute its extractors centrally or on edge storage systems near to where
+data are stored. 
+Our implementation uses the \funcx~\cite{chard2019serverless} FaaS platform 
+to deploy and run extractors. 
+\funcx{} is specifically designed to integrate with research computing 
+cyberinfrastructure and enable a FaaS execution interface. 
+\funcx{} builds upon the Parsl~\cite{babuji2019parsl} parallel programming library to 
+manage the execution of functions in containers on arbitrary compute resources. 
+\funcx{} enables \name{} to execute metadata extraction functions at any registered 
+and accessible \funcx{} endpoint. 
+We deploy the prototype with a co-located endpoint for central extraction
+and use remotely deployed endpoints for edge extraction.
+
+Each \name{} metadata extractor and its dependencies are wrapped in a Docker container
+such that it can be executed in different locations. 
+We have published each extractor container to \funcx{} and registered a \funcx{} function for 
+each extractor. The function is responsible for invoking the extractor and returning the 
+resulting metadata as a JSON dictionary. 
+
+\funcx{} enables \name{} to reliably scale to thousands of nodes and deploy 
+metadata extraction tasks on arbitrary computing resources. 
+\name{} can make use of any accessible \funcx{} endpoint to process data at the edge, 
+sending extractor codes and containers to the \funcx{} endpoint for execution. In addition, 
+\funcx{} supports Singularity and Shifter, allowing \name{} extractors to be executed
+on various high performance computing systems. 
+
+\name{} implements a comprehensive security model using Globus Auth~\cite{tuecke2016globus}. 
+All interactions with the \name{} Web service are secured with Globus Auth. 
+Users can authenticate with \name{} using one of 
+several hundred identity providers, including many institutions. 
+\name{} uses Globus Auth OAuth~2 flows to stage data on behalf
+of authenticated users. \name{} first verifies a user identity, requests an access
+token to perform data transfers on their behalf, and then uses Globus to stage
+data from remote storage to the \name{} extractor. 
+Finally, the resulting metadata are published into the search index using a Globus Search
+access token. The search index is configured with a \textit{visible\_to} field, restricting
+discovery to authenticated users.
+
 
 \section{Evaluation Plan}
 \label{sec:eval}
@@ -267,11 +333,7 @@ each of their files.
 
 This research is conducted under the guidance of Dr. Ian Foster and Dr. Kyle Chard of the 
 University of Chicago and Argonne National Lab. This work is made possible in part by the contributions
-of Ryan Chard, Yadu N. Babuji, and Zhuozhao Li. The existing work portions of this paper used resources of the
-Argonne Leadership Computing Facility, which is a DOE Office of Science User
-Facility supported under Contract DE-AC02-06CH11357. 
-We gratefully acknowledge the computing resources provided and 
-operated by the Joint Laboratory for System Evaluation (JLSE) at Argonne National Laboratory. 
+of Ryan Chard, Yadu N. Babuji, Zhuozhao Li, and Ryan Wong. 
 
 
 \end{acks}
