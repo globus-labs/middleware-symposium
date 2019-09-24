@@ -101,23 +101,98 @@ SLAs.
 
 \section{Introduction}
 
-As IoT, scientific instruments, and personal computing devices generate large quantities of streaming data, 
-running compute tasks on predefined resource allocations proves generally ineffective. For one, a given 
-allocation may not be available---for instance, a shorter-duration task might spend an inordinate amount of time in an 
-HPC task queue. Additionally for some workloads, moving data can be prohibitively expensive. For instance, electron 
-microscopy studies must first determine an image's quality before processing it, making every low-quality image transferred 
-a sunk cost. Oftentimes metadata 
+%As IoT, scientific instruments, and personal computing devices generate large quantities of streaming data, 
+%running compute tasks on predefined resource allocations proves generally ineffective. For one, a given 
+%allocation may not be available---for instance, a shorter-duration task might spend an inordinate amount of time in an 
+%HPC task queue. Additionally for some workloads, moving data to dedicated clusters can be prohibitively expensive, 
+%and 
+
+% For instance, electron 
+% microscopy studies must first determine an image's quality before processing it, making every low-quality image transferred 
+% a sunk cost. 
+Advances in scientific instruments, computational capabilities, and the proliferation of IoT devices
+have increased the volume, velocity, and variety of research data. 
+As a result, researchers are increasingly adopting data-driven research practices, 
+in which data are collected, stored for long periods of time, shared, 
+and reused.
+Unfortunately, these factors create new research data management challenges, 
+not least of which is the need for data to be adequately described
+for it to be generally useful. Without descriptive metadata, data
+may become unidentifiable, siloed, and in general, 
+not useful to either the researchers who own the data or the broader scientific community. 
+Unfortunately, organizing and annotating data is a time-consuming process
+and the gulf between data generation rates
+and the finite management capabilities of researchers
+continues to grow. To increase the value and usefulness of scientific data, 
+new methods are required to automate the extraction and association 
+of rich metadata that describe not only the data themselves, but
+also their structure and format, provenance, and administrative information.
+
+Data lakes have become a popular paradigm for managing large and 
+heterogeneous data from various sources. 
+A data lake contains a collection of data in different formats, 
+accompanied by metadata describing those data. 
+Unfortunately, the data deluge and the desire to store all data
+for eternity can quickly turn a data lake into a ``data 
+swamp''~\cite{skluzacek2018skluma}---a term used to describe the situation in which the data 
+stored in the data lake lack the metadata necessary to be 
+discoverable, understandable, and usable. Without automated and scalable 
+approaches to derive metadata from scientific data, the utility of 
+these data are reduced. This problem is 
+especially prevalent in science as 
+datasets can be enormous (many petabytes),
+are created and shared by dynamic collaborations, 
+are often collected under tight time constraints where data management processes become afterthoughts, 
+and for which preservation is important for purposes of reproducibility and reuse. 
+
+Extracting metadata from scientific data is a complex task. 
+Scientific repositories may exceed millions of files and petabytes of data;
+data are created at different rates, by different people; 
+and there are an enormous number of data formats and conventions. 
+While metadata can be rapidly extracted from some data types, others, such as
+images and large hierarchical file formats can require the use of multiple extraction methods.  
+As a result, the metadata extraction process must be scalable to process large numbers
+of files, flexible to support different extraction methods, and extensible
+to be applied to various scientific data types and formats.
+
+Serverless computing, and in particular function as a service (FaaS),
+provides an ideal model for managing the execution of
+many short-running extractors on an arbitrarily large number of files. 
+Serverless computing abstracts computing resources from the user, enabling
+the deployment of applications without consideration for the physical and virtual infrastructure on which 
+they are hosted.FaaS allows users to register programming functions with predefined input signatures. 
+Registered functions can subsequently be invoked many times
+without the need to provision or scale any infrastructure.
+
+In this paper we propose the use of FaaS for mapping the metadata extraction problem to a 
+collection of granular metadata extractor functions. 
+We describe how such a model can support the flexibility, scalability, and extensibility required
+for scientific metadata extraction. 
+Rather than rely on commercial FaaS systems, we use a distributed FaaS model 
+that overcomes the limitation of moving large amounts of data to the cloud. 
+Instead, we are able to push
+metadata extractors to the edge systems on which the scientific data reside. 
+
+Our prototype system, \name{}, provides high-throughput and on-demand metadata 
+extraction that enables the automated creation of rich, searchable data lakes from previously unsearchable data swamps. 
+\name{} implements dynamic metadata extraction workflows comprised of serverless functions that may be 
+executed in the cloud or at the edge. \name{} runs as a centralized management
+service that orchestrates the crawling, transfer (when necessary), and execution of 
+metadata extraction functions. % and outputs a rich metadata. 
+\name{} uses the \funcx{} serverless supercomputing platform~\cite{chard2019serverless}
+to execute functions across diverse and distributed computing infrastructure.
 
 
-The primary goal of this work is the following: 
 
-implement and evaluate a serverless metadata extraction system
-that allows users to deploy endpoints at the edge on which metadata extraction functions can be run
-
-creating a comprehensive, searchable index of files across multiple edge devices
-
-explore how the system can intelligently self-optimize subject to a number of constraints, including compute time, 
-current allocation availability, monetary cost, and security requirements (e.g., HIPAA).
+%The primary goal of this work is the following: 
+%
+%implement and evaluate a serverless metadata extraction system
+%that allows users to deploy endpoints at the edge on which metadata extraction functions can be run
+%
+%creating a comprehensive, searchable index of files across multiple edge devices
+%
+%explore how the system can intelligently self-optimize subject to a number of constraints, including compute time, 
+%current allocation availability, monetary cost, and security requirements (e.g., HIPAA).
 
 \name{} builds upon a large body of work in both metadata extraction systems and serverless computing.
 Others~\cite{egan2003vizier, welter2013nhgri, irods, dataverse} have created 
