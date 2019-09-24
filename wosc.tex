@@ -99,20 +99,25 @@ SLAs.
 \maketitle
 
 
-
-\section{Contributions}
-
-\tyler{merge these (as bullets?) into intro text}
-The primary goal of this work is to both implement and evaluate a serverless metadata extraction system
-that allows users to deploy endpoints at the edge on which metadata extraction functions can be run, 
-creating a comprehensive, searchable index of files across multiple edge devices. Moreove, we plan to 
-explore how the system can intelligently self-optimize subject to a number of constraints, including compute time, 
-current allocation availability, monetary cost, and security requirements (e.g., HIPAA). 
-
 \section{Introduction}
 
-\tyler{Intro lead-in here}
+As IoT, scientific instruments, and personal computing devices generate large quantities of streaming data, 
+running compute tasks on predefined resource allocations proves generally ineffective. For one, a given 
+allocation may not be available---for instance, a shorter-duration task might spend an inordinate amount of time in an 
+HPC task queue. Additionally for some workloads, moving data can be prohibitively expensive. For instance, electron 
+microscopy studies must first determine an image's quality before processing it, making every low-quality image transferred 
+a sunk cost. Oftentimes metadata 
 
+
+The primary goal of this work is the following: 
+
+implement and evaluate a serverless metadata extraction system
+that allows users to deploy endpoints at the edge on which metadata extraction functions can be run
+
+creating a comprehensive, searchable index of files across multiple edge devices
+
+explore how the system can intelligently self-optimize subject to a number of constraints, including compute time, 
+current allocation availability, monetary cost, and security requirements (e.g., HIPAA).
 
 \name{} builds upon a large body of work in both metadata extraction systems and serverless computing.
 Others~\cite{egan2003vizier, welter2013nhgri, irods, dataverse} have created 
