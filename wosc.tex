@@ -101,24 +101,21 @@ SLAs.
 
 
 \section{Contributions}
+
+\tyler{merge these (as bullets?) into intro text}
 The primary goal of this work is to both implement and evaluate a serverless metadata extraction system
 that allows users to deploy endpoints at the edge on which metadata extraction functions can be run, 
 creating a comprehensive, searchable index of files across multiple edge devices. Moreove, we plan to 
 explore how the system can intelligently self-optimize subject to a number of constraints, including compute time, 
 current allocation availability, monetary cost, and security requirements (e.g., HIPAA). 
 
-\section{Summary}
-\tyler{Lifted Related Work from last paper. Should tie it into a nicer, more conversational lit review). 
-\name{} builds upon a large body of work in both metadata extraction systems and serverless computing. 
-\name{} is not the first to provide a scalable solution to extract metadata from datasets.
-Pioneering research on data lakes developed methods for 
-extracting standard metadata from nonstandard file types and formats~\cite{terrizzano2015data}. 
-Most data lakes are designed with a specific target domain for which they are optimized, 
-whether they primarily focus on transactional, scientific, or networked data. 
-\name{} is designed to be easily extensible and therefore can be eaisly applied
-to different domains. 
+\section{Introduction}
 
-We~\cite{wozniak15bigdata} and others~\cite{egan2003vizier, welter2013nhgri, irods, dataverse} have created 
+\tyler{Intro lead-in here}
+
+
+\name{} builds upon a large body of work in both metadata extraction systems and serverless computing.
+Others~\cite{egan2003vizier, welter2013nhgri, irods, dataverse} have created 
 systems to manage metadata catalogs that
 support the organization and discovery of research data. However, these approaches typically 
 require that users provide metadata and that curators continue to organize data over time. 
@@ -132,14 +129,6 @@ Brown Dog~\cite{padhy2015brown} is an extensible metadata extraction platform,
 providing metadata extraction services for a number of 
 disciplines ranging from materials science to social science.
 Unlike \name{}, Brown Dog requires that files are uploaded for extraction. 
-The Apache Tika toolkit~\cite{mattmann2011tika} is an open-source content and metadata extraction library. 
-%While Tika does not yet exist as a service, it
-Tika has a robust parser interface in which users can create and 
-employ their own parsers in metadata extraction workflows. 
-While Apache Tika has parsers that support thousands of file formats, the automated parser-to-file mapping 
-utilizes MIME types to find suitable parsers for a file, which is often misleading for many scientific data
-use cases. \name{} could be extended to support Tika extractors and to enable
-execution on a serverless platform. %\ryan{Didn't you add tika as an xtract extractor? if so we should say it.}
 
 While most related research performs metadata extraction to enable search,
 \name{}-like systematic sweeps across repositories can also be used for analysis.  
@@ -187,7 +176,7 @@ The data published by the MDF is primarily stored on storage at the National Cen
 
 Petrel? Running out of room. 
 
-Globus GridFTP~\cite{\cite{ananthakrishnan2018globus} hosts petabytes of files over tens of thousands of individual user endpoints between research labs, 
+Globus GridFTP~\cite{ananthakrishnan2018globus} hosts petabytes of files over tens of thousands of individual user endpoints between research labs, 
 universities, industry, and home computing devices. Many \tyler{???} users elect to have all or part of their data publicly 
 shared with the rest of the Globus community. Xtract lends itself well to Globus as Globus already deploys an 
 endpoint on the compute node.  We intend to deploy the funcX endpoint as part of the Globus endpoint software, and 
