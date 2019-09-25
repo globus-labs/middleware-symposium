@@ -51,23 +51,33 @@
 \begin{abstract}
 \tyler{max 100 words}
 
-\tyler{GRAND-er. be more dramatic. }
-\kyle{Maybe here you could say. Lots of data. Its created and stored in different places. 
-We need to rethink the siloed and antiquated file system approach and instead think
-of data in one global index of metadata (i.e., a data ocean -- just made up this term, not sure
-if I like it). To do this we need to be able extract metadata
-from where data exists. We propose a fluid, serverless middleware in which extractors
-are dynamically determined and executed wherever it makes most
-sense (e.g., at the edge, cloud, computing center, ...)}
+%\tyler{GRAND-er. be more dramatic. }
+%\kyle{Maybe here you could say. Lots of data. Its created and stored in different places. 
+%We need to rethink the siloed and antiquated file system approach and instead think
+%of data in one global index of metadata (i.e., a data ocean -- just made up this term, not sure
+%if I like it). To do this we need to be able extract metadata
+%from where data exists. We propose a fluid, serverless middleware in which extractors
+%are dynamically determined and executed wherever it makes most
+%sense (e.g., at the edge, cloud, computing center, ...)}
 
-The rapid increase in the number of data sources and sizes will prove largely 
-useless if these data are not findable, interpretable, or reusable. In this work 
-we propose a middleware architecture called Xtract that leverages serverless 
-computing to simultaneously extract metadata across a continuum of heterogeneous edge 
-devices, from IoT to HPC to 
-laptops. Xtract will enable the curation of an atomic multi-site data lake in which the
-resources can make intelligently scale and move data in order to optimize for various 
-SLAs.
+
+
+The rapid generation of data from IoT devices, scientific instruments, and user edge devices presents
+unique challenges in data management. Currently these data are distributed and generally siloed, 
+but the current capabilities of file systems do not enable users to search these distributed data collections.
+ In this work we propose \name{}, a serverless middleware 
+that extracts metadata from files on heterogeneous edge computing resources, and conducting the extraction 
+where it makes the most sense, whether on the device itself, in the cloud, or on a dedicated cluster. 
+To this end, we intend to create a searchable global index across a user's or multiple users' data collections.  
+	
+	
+%In this work
+%we propose a middleware architecture called Xtract that leverages serverless 
+%computing to simultaneously extract metadata across a continuum of heterogeneous edge 
+%devices, from IoT to HPC to 
+%laptops. Xtract will enable the curation of an atomic multi-site data lake in which the
+%resources can make intelligently scale and move data in order to optimize for various 
+%SLAs.
 
 
 \end{abstract}
@@ -118,7 +128,7 @@ SLAs.
 % For instance, electron 
 % microscopy studies must first determine an image's quality before processing it, making every low-quality image transferred 
 % a sunk cost. 
-\kyle{this is similar to workshop paper. what are the rules on re-using text?}
+\kyle{this is similar to workshop paper. what are the rules on re-using text?}. \tyler{I'll probably rewrite to be safe}
 Advances in scientific instruments, computational capabilities, and the proliferation of IoT devices
 have increased the volume, velocity, and variety of data. 
 As a result, organizations are increasingly adopting data-driven enterprise and research practices, 
@@ -136,23 +146,6 @@ continues to grow. To increase the value and usefulness of scientific data,
 new methods are required to automate the extraction and association 
 of rich metadata that describe not only the data themselves, but
 also their structure and format, provenance, and administrative information.
-
-%Data lakes have become a popular paradigm for managing large and 
-%heterogeneous data from various sources. 
-%A data lake contains a collection of data in different formats, 
-%accompanied by metadata describing those data. 
-%Unfortunately, the data deluge and the desire to store all data
-%for eternity can quickly turn a data lake into a ``data 
-%swamp''~\cite{skluzacek2018skluma}---a term used to describe the situation in which the data 
-%stored in the data lake lack the metadata necessary to be 
-%discoverable, understandable, and usable. Without automated and scalable 
-%approaches to derive metadata from scientific data, the utility of 
-%these data are reduced. This problem is 
-%especially prevalent in science as 
-%datasets can be enormous (many petabytes),
-%are created and shared by dynamic collaborations, 
-%are often collected under tight time constraints where data management processes become afterthoughts, 
-%and for which preservation is important for purposes of reproducibility and reuse. 
 
 \tyler{Add note here about the edge}
 Extracting metadata from enterprise and scientific data is a complex task. 
@@ -316,8 +309,6 @@ The downside of the expansive range of materials data held by the MDF
 is that it can be difficult for users to find data relevant to their science.
 The MDF reduces the ``data discovery" challenge by hosting a search index that provides access to metadata from the 
 files (e.g., which material was simulated in a certain calculation).
-The data published by the MDF is primarily stored on storage at the National Center for Supercomputing Applications
-(NCSA) and is accessible via Globus.  
 
 Petrel? Running out of room. 
 
