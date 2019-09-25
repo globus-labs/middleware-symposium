@@ -52,6 +52,14 @@
 \tyler{max 100 words}
 
 \tyler{GRAND-er. be more dramatic. }
+\kyle{Maybe here you could say. Lots of data. Its created and stored in different places. 
+We need to rethink the siloed and antiquated file system approach and instead think
+of data in one global index of metadata (i.e., a data ocean -- just made up this term, not sure
+if I like it). To do this we need to be able extract metadata
+from where data exists. We propose a fluid, serverless middleware in which extractors
+are dynamically determined and executed wherever it makes most
+sense (e.g., at the edge, cloud, computing center, ...)}
+
 The rapid increase in the number of data sources and sizes will prove largely 
 useless if these data are not findable, interpretable, or reusable. In this work 
 we propose a middleware architecture called Xtract that leverages serverless 
@@ -110,6 +118,7 @@ SLAs.
 % For instance, electron 
 % microscopy studies must first determine an image's quality before processing it, making every low-quality image transferred 
 % a sunk cost. 
+\kyle{this is similar to workshop paper. what are the rules on re-using text?}
 Advances in scientific instruments, computational capabilities, and the proliferation of IoT devices
 have increased the volume, velocity, and variety of data. 
 As a result, organizations are increasingly adopting data-driven enterprise and research practices, 
@@ -169,7 +178,7 @@ they are hosted.FaaS allows users to register programming functions with predefi
 Registered functions can subsequently be invoked many times
 without the need to provision or scale any infrastructure.
 
-\tyler{need to mention the name of our system first}
+\tyler{need to mention the name of our system first} \kyle{Do other papers have a separate RW section?}
 We are not the first to construct an architecture to automatically extract metadata from repositories. 
 For example, ScienceSearch~\cite{rodrigo2018sciencesearch} uses 
 machine learning techniques to extract metadata from a dataset served by the National Center for Electron Microscopy (NCEM). 
@@ -226,7 +235,7 @@ other extractors to apply.
 %intents and purposes as we still fire jobs into funcx}
 
 %\name{} is implemented as a RESTful web service and is 
-\name{} is deployed on an Amazon Web Services (AWS) and makes use
+\name{} is deployed on Amazon Web Services (AWS) and makes use
 of various services. The main \name{} service
 is deployed on an AWS Elastic Compute Cloud instance.
 \name{} manages state in an AWS Relational Database Service (RDS)
@@ -287,7 +296,7 @@ discovery to authenticated users.
 \section{Evaluation Plan}
 \label{sec:eval}
 
-We intend to index real science use cases, particularly those in which individual data files are heterogenous 
+We intend to index real science use cases, particularly those in which individual data files are heterogeneous 
 or geographically distributed. For each, we intend to explore how to optimize the system across dimensions of 
 total compute time (SLAs), monetary cost, security requirements, and resource availability.
 
@@ -312,9 +321,9 @@ The data published by the MDF is primarily stored on storage at the National Cen
 
 Petrel? Running out of room. 
 
-Globus GridFTP~\cite{ananthakrishnan2018globus} hosts petabytes of files over tens of thousands of individual user endpoints between research labs, 
+Globus~\cite{ananthakrishnan2018globus} manages petabytes of files over tens of thousands of individual user endpoints between research labs, 
 universities, industry, and home computing devices. Many \tyler{???} users elect to have all or part of their data publicly 
-shared with the rest of the Globus community. Xtract lends itself well to Globus as Globus already deploys an 
+shared with the rest of the Globus community. \kyle{private sharing could also be indexed} Xtract lends itself well to Globus as Globus already deploys an 
 endpoint on the compute node.  We intend to deploy the funcX endpoint as part of the Globus endpoint software, and 
 execute secure metadata extraction over all available petabytes. Globus is particularly useful in studying multi-site 
 metadata extraction, as users generally have multiple active endpoints. \tyler{more detail}. 
