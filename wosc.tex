@@ -119,70 +119,37 @@ To this end, we intend to create a searchable global index across a user's or mu
 
 \section{Introduction}
 
-%As IoT, scientific instruments, and personal computing devices generate large quantities of streaming data, 
-%running compute tasks on predefined resource allocations proves generally ineffective. For one, a given 
-%allocation may not be available---for instance, a shorter-duration task might spend an inordinate amount of time in an 
-%HPC task queue. Additionally for some workloads, moving data to dedicated clusters can be prohibitively expensive, 
-%and 
+The rapid generation of data from IoT devices, scientific instruments, and personal computing devices presents unique 
+data management challenges. Currently data are spread across multiple machines, are generally siloed, and require 
+heavy manual labor by users in creating metadata that make the data on these devices searchable. Some~\cite{egan2003vizier, welter2013nhgri, irods, dataverse}  have created data catalogs from user-submitted metadata. These, however, are not scalable to future science and enterprise 
+exascale use cases, as humans and ad hoc scripts provide little value in labeling billions or more heterogeneous files spanning exabytes and beyond
+that would be expensive (or outright impossible) to transfer, stage, and process on small cluster file systems and personal computing devices.  
+In order to build a global metadata catalog over distributed big data, we require automated methods to crawl data, extract 
+metadata attributes for each file, and populate a global search index for users to find and access data. Others have developed end-to-end 
+automated metadata extraction systems, but they require moving data to a central service~\cite{skluzacek2018skluma, skluzacek2016klimatic, padhy2015brown, rodrigo2018sciencesearch} or must be manually deployed at data~\cite{mattmann2011tika}. 
 
-% For instance, electron 
-% microscopy studies must first determine an image's quality before processing it, making every low-quality image transferred 
-% a sunk cost. 
-\kyle{this is similar to workshop paper. what are the rules on re-using text?}. \tyler{I'll probably rewrite to be safe}
-Advances in scientific instruments, computational capabilities, and the proliferation of IoT devices
-have increased the volume, velocity, and variety of data. 
-As a result, organizations are increasingly adopting data-driven enterprise and research practices, 
-in which data are collected, stored for long periods of time, shared, 
-and reused.
-Unfortunately, these factors create new data management challenges, 
-not least of which is the need for data to be adequately described
-for it to be generally useful. Without descriptive metadata, data
-may become unidentifiable, siloed, and in general, 
-not useful to either one's own organization or the broader open-source community. 
-Unfortunately, organizing and annotating data is a time-consuming process
-and the gulf between data generation rates
-and the finite management capabilities of researchers
-continues to grow. To increase the value and usefulness of scientific data, 
-new methods are required to automate the extraction and association 
-of rich metadata that describe not only the data themselves, but
-also their structure and format, provenance, and administrative information.
-
-\tyler{Add note here about the edge}
-Extracting metadata from enterprise and scientific data is a complex task. 
-Data repositories may exceed millions of files and petabytes of data;
-data are created at different rates, by different people; 
-and there are an enormous number of data formats and conventions. 
-Some~\cite{egan2003vizier, welter2013nhgri, irods, dataverse} have created 
-systems to manage metadata catalogs that
-support the organization and discovery of research data. However, these approaches typically 
-require that users provide metadata and that curators continue to organize data over time.
-While metadata can be rapidly extracted from some data types, others, such as
-images and large hierarchical file formats can require the use of multiple extraction methods.  
-As a result, the metadata extraction process must be scalable to process large numbers
-of files, flexible to support different extraction methods, and extensible
-to be applied to various scientific data types and formats.
-
+\tyler{un-plagiarize the serverless sentences}
+In this work we propose \name{}
+a serverless middleware that provides high-throughput and on-demand metadata 
+extraction that enables the automated creation of rich, searchable data lakes from previously unsearchable data swamps. 
+\name{} uses the \funcx{} serverless supercomputing platform~\cite{chard2019serverless}
+to execute functions across diverse and distributed computing infrastructure.
 Serverless computing, and in particular function as a service (FaaS),
 provides an ideal model for managing the execution of
 many short-running extractors on an arbitrarily large number of files. 
 Serverless computing abstracts computing resources from the user, enabling
 the deployment of applications without consideration for the physical and virtual infrastructure on which 
-they are hosted.FaaS allows users to register programming functions with predefined input signatures. 
+they are hosted. FaaS allows users to register programming functions with predefined input signatures.
 Registered functions can subsequently be invoked many times
 without the need to provision or scale any infrastructure.
 
-\tyler{need to mention the name of our system first} \kyle{Do other papers have a separate RW section?}
-We are not the first to construct an architecture to automatically extract metadata from repositories. 
-For example, ScienceSearch~\cite{rodrigo2018sciencesearch} uses 
-machine learning techniques to extract metadata from a dataset served by the National Center for Electron Microscopy (NCEM). 
-Most of data in this use case are micrograph images, but additional contextual metadata are derived from file system 
-data and free text proposals and publications. Like \name{}, ScienceSearch 
-provides a means for users to extensibly switch metadata extractors to suit a given dataset.  
-Brown Dog~\cite{padhy2015brown} is an extensible metadata extraction platform, 
-providing metadata extraction services for a number of 
-disciplines ranging from materials science to social science.
-Unlike \name{}, Brown Dog requires that files are uploaded for extraction. 
+%While metadata can be rapidly extracted from some data types, others, such as
+%images and large hierarchical file formats can require the use of multiple extraction methods.  
+%As a result, the metadata extraction process must be scalable to process large numbers
+%of files, flexible to support different extraction methods, and extensible
+%to be applied to various scientific data types and formats.
 
+\tyler{unplagiarize the first 3 sentences here}
 In this paper we propose the use of FaaS for mapping the metadata extraction problem to a 
 collection of granular metadata extractor functions. 
 We describe how such a model can support the flexibility, scalability, and extensibility required
@@ -191,24 +158,37 @@ Rather than rely on commercial FaaS systems, we use a distributed FaaS model
 that overcomes the limitation of moving large amounts of data to the cloud. 
 Instead, we are able to push
 metadata extractors to the edge systems on which the scientific data reside. 
-
-Our prototype system, \name{}, provides high-throughput and on-demand metadata 
-extraction that enables the automated creation of rich, searchable data lakes from previously unsearchable data swamps. 
-\name{} uses the \funcx{} serverless supercomputing platform~\cite{chard2019serverless}
-to execute functions across diverse and distributed computing infrastructure.
 The contributions of \name{} are the following: 
-
-
-
-The primary goal of this work is the following: 
-
+\name{} is advantageous to existing metadata extraction 
+systems in that it: 
 \begin{itemize}
-\item Implement and evaluate a serverless metadata extraction system
-\item Enable users to deploy endpoints and invoke metadata extraction functions on the edge
-\item Create comprehensive, searchable indexes of files across multiple devices
-\item Explore intelligent self-optimization methods subject to a number of constraints, including compute time, 
-current allocation availability, monetary cost, and security requirements (e.g., HIPAA).
+\item Is infinitely scalable across all available resources on all compute allocations. 
+\item Deploys endpoints at data, allowing for the decentralization of data processing. 
+\item Intelligently makes data staging decisions based on available resources across all allocations.
+\item Enables users to submit custom extractor function-runtime pairs that supplement a suite of user supplied extractors.
+\item Automatically populates a search index of rich, searchable metadata. 
+\item Utilizes existing auth protocols for data privacy and data set sharing across multiple users. 
 \end{itemize}
+
+%Our prototype system, \name{}, provides high-throughput and on-demand metadata 
+%extraction that enables the automated creation of rich, searchable data lakes from previously unsearchable data swamps. 
+%\name{} uses the \funcx{} serverless supercomputing platform~\cite{chard2019serverless}
+%to execute functions across diverse and distributed computing infrastructure.
+%The contributions of \name{} are the following: 
+%
+%
+%\begin{itemize}
+%\item Implement and evaluate a serverless metadata extraction system
+%\item Enable users to deploy endpoints and invoke metadata extraction functions on the edge
+%\item Create comprehensive, searchable indexes of files across multiple devices
+%\item Explore intelligent self-optimization methods subject to a number of constraints, including compute time, 
+%current allocation availability, monetary cost, and security requirements (e.g., HIPAA).
+%\end{itemize}
+
+The remainder of this paper is organized as follows. 
+\S\ref{sec:approach} presents our proposed architecture for \name{}. 
+\S\ref{sec:eval} discusses metrics and workloads used to evaluate its performance. 
+Finally, \S\ref{sec:conc} contains concluding remarks.
 
 
 \section{Approach}
