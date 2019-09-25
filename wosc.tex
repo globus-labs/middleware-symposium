@@ -193,7 +193,8 @@ Finally, \S\ref{sec:conc} contains concluding remarks.
 
 \section{Approach}
 \label{sec:approach}
-
+\tyler{Need to make this slightly more high-level. Probably shouldn't 
+say anything about AWS in here...}
 \name{} is implemented as a service via which users can submit
 requests to extract metadata from a collection of files.
 \name{} first crawls the specified files and determines
@@ -208,9 +209,8 @@ other extractors to apply.
 %intents and purposes as we still fire jobs into funcx}
 
 %\name{} is implemented as a RESTful web service and is 
-\name{} is deployed on Amazon Web Services (AWS) and makes use
-of various services. The main \name{} service
-is deployed on an AWS Elastic Compute Cloud instance.
+\name{} is deployed as a service connected to a database for storing 
+intermediate metadata objects.
 \name{} manages state in an AWS Relational Database Service (RDS)
 instance. Each extraction request is stored in the database
 and the state is updated throughout the extraction process. 
