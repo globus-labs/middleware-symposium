@@ -1,4 +1,4 @@
-\documentclass[sigconf]{acmart}
+\documentclass[sigconf, 9pt]{acmart}
 
 
 \usepackage{xcolor}
@@ -143,12 +143,6 @@ they are hosted. FaaS allows users to register programming functions with predef
 Registered functions can subsequently be invoked many times
 without the need to provision or scale any infrastructure.
 
-%While metadata can be rapidly extracted from some data types, others, such as
-%images and large hierarchical file formats can require the use of multiple extraction methods.  
-%As a result, the metadata extraction process must be scalable to process large numbers
-%of files, flexible to support different extraction methods, and extensible
-%to be applied to various scientific data types and formats.
-
 \tyler{unplagiarize the first 3 sentences here}
 In this paper we propose the use of FaaS for mapping the metadata extraction problem to a 
 collection of granular metadata extractor functions. 
@@ -170,20 +164,6 @@ systems in that it:
 \item Utilizes existing auth protocols for data privacy and data set sharing across multiple users. 
 \end{itemize}
 
-%Our prototype system, \name{}, provides high-throughput and on-demand metadata 
-%extraction that enables the automated creation of rich, searchable data lakes from previously unsearchable data swamps. 
-%\name{} uses the \funcx{} serverless supercomputing platform~\cite{chard2019serverless}
-%to execute functions across diverse and distributed computing infrastructure.
-%The contributions of \name{} are the following: 
-%
-%
-%\begin{itemize}
-%\item Implement and evaluate a serverless metadata extraction system
-%\item Enable users to deploy endpoints and invoke metadata extraction functions on the edge
-%\item Create comprehensive, searchable indexes of files across multiple devices
-%\item Explore intelligent self-optimization methods subject to a number of constraints, including compute time, 
-%current allocation availability, monetary cost, and security requirements (e.g., HIPAA).
-%\end{itemize}
 
 The remainder of this paper is organized as follows. 
 \S\ref{sec:approach} presents our proposed architecture for \name{}. 
@@ -193,30 +173,46 @@ Finally, \S\ref{sec:conc} contains concluding remarks.
 
 \section{Approach}
 \label{sec:approach}
-\tyler{Need to make this slightly more high-level. Probably shouldn't 
-say anything about AWS in here...}
-\name{} is implemented as a service via which users can submit
-requests to extract metadata from a collection of files.
-\name{} first crawls the specified files and determines
-an initial set of extractors to apply to them. 
-As outlined above, the extractors may be executed
-either centrally on the \name{} server or remotely alongside
-the data. As processing continues, \name{} assembles 
-a metadata document for each file and dynamically selects
-other extractors to apply.
 
-%\ryan{Explain here that we have the ability to do edge but our prototype leverages petrelkube -- which is an edge device for all 
-%intents and purposes as we still fire jobs into funcx}
+\name{} is a serverless metadata extraction middleware that runs atop the \funcx{} serverless 
+computing platform, allowing users to optimize metadata extraction workflows subject to 
+extraction time, cost, available compute allocations, and security rules (e.g., HIPAA). The remainder 
+of this section outlines the various components of the system. The \name{} architecture is shown in Figure~\ref{fig:arch}.
 
-%\name{} is implemented as a RESTful web service and is 
-\name{} is deployed as a service connected to a database for storing 
-intermediate metadata objects.
-\name{} manages state in an AWS Relational Database Service (RDS)
-instance. Each extraction request is stored in the database
-and the state is updated throughout the extraction process. 
-\name{} is able to send the derived metadata to an external
-metadata catalog such as a Globus Search index.
-The \name{} architecture is shown in Figure~\ref{fig:arch}.
+\textbf{Metadata extractors} are functions that input a file or group of files, and output a metadata dictionary. 
+Each metadata extractor runs in a given runtime, or a container with all the required dependencies (i.e., files or 
+libraries) for the extractor to execute.  Our system currently provides a number of built-in extractors, including
+those to extract rich metadata from tabular, structured JSON- or XML-like, free text, and images. For future we work, 
+we plan to automatically integrate user-submitted metadata extractors, automatically generate runtimes based on inferred 
+dependency requirements, and also train \name{} to recognize when a user-submitted extractor 
+is appropriate for an arbitrary file. 
+
+The \textbf{\name{} service} dynamically provisions metadata extractors on files, and constructs extractor workflows for each file 
+or group of files in a repository.  First, \name{} sends a crawler function to each endpoint specified by the user.  The crawler creates an 
+initial metadata dictionary for each file by finding the paths and physical attributes (e.g., size, extension, hash) of each file or group of files
+in a given data set.  Once the initial index for files is created, \name{} invokes a file type extractor on each file that determines probable downstream extractors for each file. We've shown in past work~\cite{skluzacek2018skluma} that feeding the first 512 bytes of a file into 
+a trained random forests model can predict a file's type with accuracy higher than the Unix `file' command (footnote why?) and in less time
+than trying and failing random extractors on a given file. Once a file type is determined the extractor executes the remaining library of extractors 
+on each file by sending extractor functions to the endpoint, and sending additional extractors based on the returned metadata.  For instance, 
+a tabular data file with multiple lines of free text header (e.g., describing experimental setup) may be identified by the system as a tabular file, but 
+the metadata from the tabular 
+extractor will state the lines of the file that may be eligible for processing by a free text extractor (e.g., extract keywords from it).  
+
+Moreover, we 
+plan for \name{} to make data staging and resource provisioning decisions subject to a number of user-defined, real-world computing constraints. For instance, 
+perhaps in some cases there could exist an idle resource and transferring some data to a different edge device or HPC center could hasten 
+the overall execution time.  Perhaps we want to make data staging and allocation decisions that optimize for cost, so \name{} opts to transfer 
+data to cheaper (albeit likely slower or smaller) allocations for extraction.  Or perhaps certain data are subject to HIPAA, so we want to keep 
+those data on a VPC, but we can stage other data elsewhere to increase extraction performance. 
+
+\funcx{} \textbf{endpoints} can be deployed across myriad compute providers, from personal computing devices (i.e., laptops), compatible 
+IoT devices, cloud providers, and HPC systems.  Endpoints build upon the Parsl~\cite{babuji2019parsl} parallel programming library to 
+provision compute resources on a given system, and to manage the execution of functions in containers on said resources. \funcx{} enables 
+\name{} to execute metadata extraction functions at any registered and accessible \funcx{} endpoint.  \funcx{} enables \name{} to reliably 
+scale to thousands of nodes and simultaneously deploy metadata extraction tasks on arbitrary compute resources. 
+\funcx{} supports Singularity and Shifter, allowing \name{} extractors to be executed
+on various high performance computing systems. 
+
 
 \begin{figure}[t]
 	\centering
@@ -226,32 +222,6 @@ The \name{} architecture is shown in Figure~\ref{fig:arch}.
 	\label{fig:arch}
 \end{figure}
 
-\subsubsection{Metadata Extractors}
-\name{} is designed to execute its extractors centrally or on edge storage systems near to where
-data are stored. 
-Our implementation uses the \funcx~\cite{chard2019serverless} FaaS platform 
-to deploy and run extractors. 
-\funcx{} is specifically designed to integrate with research computing 
-cyberinfrastructure and enable a FaaS execution interface. 
-\funcx{} builds upon the Parsl~\cite{babuji2019parsl} parallel programming library to 
-manage the execution of functions in containers on arbitrary compute resources. 
-\funcx{} enables \name{} to execute metadata extraction functions at any registered 
-and accessible \funcx{} endpoint. 
-We deploy the prototype with a co-located endpoint for central extraction
-and use remotely deployed endpoints for edge extraction.
-
-Each \name{} metadata extractor and its dependencies are wrapped in a Docker container
-such that it can be executed in different locations. 
-We have published each extractor container to \funcx{} and registered a \funcx{} function for 
-each extractor. The function is responsible for invoking the extractor and returning the 
-resulting metadata as a JSON dictionary. 
-
-\funcx{} enables \name{} to reliably scale to thousands of nodes and deploy 
-metadata extraction tasks on arbitrary computing resources. 
-\name{} can make use of any accessible \funcx{} endpoint to process data at the edge, 
-sending extractor codes and containers to the \funcx{} endpoint for execution. In addition, 
-\funcx{} supports Singularity and Shifter, allowing \name{} extractors to be executed
-on various high performance computing systems. 
 
 \name{} implements a comprehensive security model using Globus Auth~\cite{tuecke2016globus}. 
 All interactions with the \name{} Web service are secured with Globus Auth. 
