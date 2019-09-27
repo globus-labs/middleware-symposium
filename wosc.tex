@@ -181,28 +181,34 @@ Finally, \S\ref{sec:conc} contains concluding remarks.
 
 \name{} is a serverless metadata extraction middleware that runs atop the \funcx{} serverless 
 computing platform, allowing users to optimize metadata extraction workflows subject to 
-extraction time, cost, available compute allocations, and security rules (e.g., HIPAA). The remainder 
+extraction time, cost, available compute allocations, and security policies. % (e.g., HIPAA). %KC prob best not to mention HIPAA.
+The remainder 
 of this section outlines the various components of the system. The \name{} architecture is shown in Figure~\ref{fig:arch}.
 
 \textbf{Metadata extractors} are functions that input a file or group of files, and output a metadata dictionary. 
-Each metadata extractor runs in a given runtime, or a container with all the required dependencies (i.e., files or 
+Each metadata extractor runs in a given runtime \kyle{runtime not defined}, or a container with all the required dependencies (i.e., files or 
 libraries) for the extractor to execute.  Our system currently provides a number of built-in extractors, including
-those to extract rich metadata from tabular, structured JSON- or XML-like, free text, and images. For future we work, 
-we plan to automatically integrate user-submitted metadata extractors, automatically generate runtimes based on inferred 
+those to extract metadata from tabular, structured JSON- or XML-like, free text, and images. In future we work, 
+we plan to support user-submitted metadata extractors, automatically generate runtimes based on inferred 
 dependency requirements, and also train \name{} to recognize when a user-submitted extractor 
 is appropriate for an arbitrary file. 
 
-The \textbf{\name{} service} dynamically provisions metadata extractors on files, and constructs extractor workflows for each file 
-or group of files in a repository.  First, \name{} sends a crawler function to each endpoint specified by the user.  The crawler creates an 
-initial metadata dictionary for each file by finding the paths and physical attributes (e.g., size, extension, hash) of each file or group of files
-in a given data set.  Once the initial index for files is created, \name{} invokes a file type extractor on each file that determines probable downstream extractors for each file. We've shown in past work~\cite{skluzacek2018skluma} that feeding the first 512 bytes of a file into 
-a trained random forests model can predict a file's type with accuracy higher than the Unix `file' command (footnote why?) and in less time
+The \textbf{\name{} service} dynamically applies a set of metadata extractors to files. 
+It does so by constructing a dynamic extractor workflows for each file 
+or group of files in a repository.  
+First, \name{} sends a crawler function to each endpoint specified by the user.  The crawler creates an 
+initial metadata dictionary for each file by finding the paths and physical properties (e.g., size, extension, hash) of each file or group of files
+in a given data set.  Once the initial dictionary is created, \name{} invokes a file type extractor on each file that determines probable downstream extractors for each file. We've shown in past work~\cite{skluzacek2018skluma} that feeding the first 512 bytes of a file into 
+a trained random forests model can predict a file's type with accuracy higher than the Unix `file' command (footnote why? \kyle{does this use magic bits?}) and in less time
 than trying and failing random extractors on a given file. Once a file type is determined the extractor executes the remaining library of extractors 
 on each file by sending extractor functions to the endpoint, and sending additional extractors based on the returned metadata.  For instance, 
 a tabular data file with multiple lines of free text header (e.g., describing experimental setup) may be identified by the system as a tabular file, but 
 the metadata from the tabular 
 extractor will state the lines of the file that may be eligible for processing by a free text extractor (e.g., extract keywords from it).  
 
+\kyle{Maybe the following paragraph should be moved to a future work? We should think 
+about how to structure this.  Should we make this more of a complete vision and then outline
+our prototype? Or outline our prototype and then describe where its going?} 
 Moreover, we 
 plan for \name{} to make data staging and resource provisioning decisions subject to a number of user-defined, real-world computing constraints. For instance, 
 perhaps in some cases there could exist an idle resource and transferring some data to a different edge device or HPC center could hasten 
@@ -227,7 +233,7 @@ on various high performance computing systems.
 	\label{fig:arch}
 \end{figure}
 
-
+\kyle{The following is quite long and probably could just be said in a sentence when talking about the service}
 \name{} implements a comprehensive security model using Globus Auth~\cite{tuecke2016globus}. 
 All interactions with the \name{} Web service are secured with Globus Auth. 
 Users can authenticate with \name{} using one of 
