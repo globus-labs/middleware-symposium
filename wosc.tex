@@ -121,12 +121,15 @@ To this end, we intend to create a searchable global index across a user's or mu
 
 The rapid generation of data from IoT devices, scientific instruments, and personal computing devices presents unique 
 data management challenges. Currently data are spread across multiple machines, are generally siloed, and require 
-heavy manual labor by users in creating metadata that make the data on these devices searchable. Some~\cite{egan2003vizier, welter2013nhgri, irods, dataverse}  have created data catalogs from user-submitted metadata. These, however, are not scalable to future science and enterprise 
-exascale use cases, as humans and ad hoc scripts provide little value in labeling billions or more heterogeneous files spanning exabytes and beyond
-that would be expensive (or outright impossible) to transfer, stage, and process on small cluster file systems and personal computing devices.  
+significant manual labor by users to create metadata that make the data on these devices searchable. Some~\cite{egan2003vizier, welter2013nhgri, irods, dataverse}  have created data catalogs from user-submitted metadata. These, however, are not scalable to current and future storage systems,
+%science and enterprise 
+%exascale use cases, 
+as humans cannot possibly label billions of heterogeneous files. 
+ %spanning exabytes and beyond
+%that would be expensive (or outright impossible) to transfer, stage, and process on small cluster file systems and personal computing devices.  
 In order to build a global metadata catalog over distributed big data, we require automated methods to crawl data, extract 
 metadata attributes for each file, and populate a global search index for users to find and access data. Others have developed end-to-end 
-automated metadata extraction systems, but they require moving data to a central service~\cite{skluzacek2018skluma, skluzacek2016klimatic, padhy2015brown, rodrigo2018sciencesearch} or must be manually deployed at data~\cite{mattmann2011tika}. 
+automated metadata extraction systems, but they require that data be moved to a central service~\cite{skluzacek2018skluma, skluzacek2016klimatic, padhy2015brown, rodrigo2018sciencesearch} or must be manually deployed at data~\cite{mattmann2011tika}.  \kyle{Explain in one sentence how we're different.}
 
 \tyler{un-plagiarize the serverless sentences}
 In this work we propose \name{}
@@ -143,26 +146,28 @@ they are hosted. FaaS allows users to register programming functions with predef
 Registered functions can subsequently be invoked many times
 without the need to provision or scale any infrastructure.
 
+\kyle{This paragraph repeats some of the previous one. I would vote to remove the previous paragraph}
 \tyler{unplagiarize the first 3 sentences here}
 In this paper we propose the use of FaaS for mapping the metadata extraction problem to a 
 collection of granular metadata extractor functions. 
 We describe how such a model can support the flexibility, scalability, and extensibility required
 for scientific metadata extraction. 
-Rather than rely on commercial FaaS systems, we use a distributed FaaS model 
+Rather than rely on commercial FaaS systems, we explore a novel distributed FaaS model 
 that overcomes the limitation of moving large amounts of data to the cloud. 
 Instead, we are able to push
 metadata extractors to the edge systems on which the scientific data reside. 
 The contributions of \name{} are the following: 
-\name{} is advantageous to existing metadata extraction 
-systems in that it: 
+%\name{} is advantageous to existing metadata extraction systems in that it: 
 \begin{itemize}
-\item Is infinitely scalable across all available resources on all compute allocations. 
+\item Is infinitely scalable across all various resource types from clouds to clusters. 
 \item Deploys endpoints at data, allowing for the decentralization of data processing. 
-\item Intelligently makes data staging decisions based on available resources across all allocations.
+\item Intelligently makes data staging decisions based on available resources across all allocations. \kyle{what is meant by all allocations?}
 \item Enables users to submit custom extractor function-runtime pairs that supplement a suite of user supplied extractors.
 \item Automatically populates a search index of rich, searchable metadata. 
-\item Utilizes existing auth protocols for data privacy and data set sharing across multiple users. 
+\item Utilizes secure authentication protocols for data privacy and data sharing across multiple users. 
 \end{itemize}
+
+\kyle{I'd like to see more about the novelty of the assembled pipelines in this list}
 
 
 The remainder of this paper is organized as follows. 
