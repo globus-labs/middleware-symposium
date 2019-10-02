@@ -129,29 +129,29 @@ as humans cannot possibly label billions of heterogeneous files.
 %that would be expensive (or outright impossible) to transfer, stage, and process on small cluster file systems and personal computing devices.  
 In order to build a global metadata catalog over distributed big data, we require automated methods to crawl data, extract 
 metadata attributes for each file, and populate a global search index for users to find and access data. Others have developed end-to-end 
-automated metadata extraction systems, but they require that data be moved to a central service~\cite{skluzacek2018skluma, skluzacek2016klimatic, padhy2015brown, rodrigo2018sciencesearch} or must be manually deployed at data~\cite{mattmann2011tika}.  \kyle{Explain in one sentence how we're different.}
+automated metadata extraction systems, but they require that data be moved to a central service~\cite{skluzacek2018skluma, skluzacek2016klimatic, padhy2015brown, rodrigo2018sciencesearch} or must be manually deployed at data~\cite{mattmann2011tika}. 
+In this work we strive to create a decentralized metadata extraction system that mitigates the need to send files to a central service.  
 
-\tyler{un-plagiarize the serverless sentences}
-In this work we propose \name{}
+%Serverless computing abstracts computing resources from the user, enabling
+%the deployment of applications without consideration for the physical and virtual infrastructure on which 
+%they are hosted. FaaS allows users to register programming functions with predefined input signatures.
+%Registered functions can subsequently be invoked many times
+%without the need to provision or scale any infrastructure.
+
+%\kyle{This paragraph repeats some of the previous one. I would vote to remove the previous paragraph}
+%\tyler{unplagiarize the first 3 sentences here}
+We propose \name{}
 a serverless middleware that provides high-throughput and on-demand metadata 
 extraction that enables the automated creation of rich, searchable data lakes from previously unsearchable data swamps. 
+Serverless computing, and specifically function as a service (FaaS),
+provides an ideal model for managing the invocation of
+many short-running extractors on an arbitrarily large number of files. 
 \name{} uses the \funcx{} serverless supercomputing platform~\cite{chard2019serverless}
 to execute functions across diverse and distributed computing infrastructure.
-Serverless computing, and in particular function as a service (FaaS),
-provides an ideal model for managing the execution of
-many short-running extractors on an arbitrarily large number of files. 
-Serverless computing abstracts computing resources from the user, enabling
-the deployment of applications without consideration for the physical and virtual infrastructure on which 
-they are hosted. FaaS allows users to register programming functions with predefined input signatures.
-Registered functions can subsequently be invoked many times
-without the need to provision or scale any infrastructure.
-
-\kyle{This paragraph repeats some of the previous one. I would vote to remove the previous paragraph}
-\tyler{unplagiarize the first 3 sentences here}
-In this paper we propose the use of FaaS for mapping the metadata extraction problem to a 
-collection of granular metadata extractor functions. 
-We describe how such a model can support the flexibility, scalability, and extensibility required
-for scientific metadata extraction. 
+%We propose the use of FaaS for mapping the metadata extraction problem to a 
+%collection of granular metadata extractor functions. 
+%We describe how such a model can support the flexibility, scalability, and extensibility required
+%for scientific metadata extraction. 
 Rather than rely on commercial FaaS systems, we explore a novel distributed FaaS model 
 that overcomes the limitation of moving large amounts of data to the cloud. 
 Instead, we are able to push
@@ -160,14 +160,15 @@ The contributions of \name{} are the following:
 %\name{} is advantageous to existing metadata extraction systems in that it: 
 \begin{itemize}
 \item Is infinitely scalable across all various resource types from clouds to clusters. 
-\item Deploys endpoints at data, allowing for the decentralization of data processing. 
-\item Intelligently makes data staging decisions based on available resources across all allocations. \kyle{what is meant by all allocations?}
-\item Enables users to submit custom extractor function-runtime pairs that supplement a suite of user supplied extractors.
+\item Deploy endpoints at data, allowing for the decentralization of data processing. 
+\item Present a novel method for automatically constructing unique metadata extractor pipelines for diverse file types. 
+\item Intelligently makes data staging decisions based on available resources across all of a user's compute allocations. %\kyle{what is meant by all allocations?}
+\item Enable users to submit custom extractor function-runtime pairs that supplement a suite of user supplied extractors.
 \item Automatically populates a search index of rich, searchable metadata. 
 \item Utilizes secure authentication protocols for data privacy and data sharing across multiple users. 
 \end{itemize}
 
-\kyle{I'd like to see more about the novelty of the assembled pipelines in this list}
+%\kyle{I'd like to see more about the novelty of the assembled pipelines in this list}
 
 
 The remainder of this paper is organized as follows. 
@@ -204,7 +205,16 @@ than trying and failing random extractors on a given file. Once a file type is d
 on each file by sending extractor functions to the endpoint, and sending additional extractors based on the returned metadata.  For instance, 
 a tabular data file with multiple lines of free text header (e.g., describing experimental setup) may be identified by the system as a tabular file, but 
 the metadata from the tabular 
-extractor will state the lines of the file that may be eligible for processing by a free text extractor (e.g., extract keywords from it).  
+extractor will state the lines of the file that may be eligible for processing by a free text extractor (e.g., extract keywords from it).
+Requests to the web service are protected using Globus Auth~\cite{tuecke2016globus}, and all resulting metadata are stored to a searchable Globus Search index. 
+
+\funcx{} \textbf{endpoints} can be deployed across myriad compute providers, from personal computing devices (i.e., laptops), compatible 
+IoT devices, cloud providers, and HPC systems.  Endpoints build upon the Parsl~\cite{babuji2019parsl} parallel programming library to 
+provision compute resources on a given system, and to manage the execution of functions in containers on said resources. \funcx{} enables 
+\name{} to execute metadata extraction functions at any registered and accessible \funcx{} endpoint.  \funcx{} enables \name{} to reliably 
+scale to thousands of nodes and simultaneously deploy metadata extraction tasks on arbitrary compute resources. 
+\funcx{} supports Singularity and Shifter, allowing \name{} extractors to be executed
+on various high performance computing systems. 
 
 \kyle{Maybe the following paragraph should be moved to a future work? We should think 
 about how to structure this.  Should we make this more of a complete vision and then outline
@@ -216,35 +226,25 @@ the overall execution time.  Perhaps we want to make data staging and allocation
 data to cheaper (albeit likely slower or smaller) allocations for extraction.  Or perhaps certain data are subject to HIPAA, so we want to keep 
 those data on a VPC, but we can stage other data elsewhere to increase extraction performance. 
 
-\funcx{} \textbf{endpoints} can be deployed across myriad compute providers, from personal computing devices (i.e., laptops), compatible 
-IoT devices, cloud providers, and HPC systems.  Endpoints build upon the Parsl~\cite{babuji2019parsl} parallel programming library to 
-provision compute resources on a given system, and to manage the execution of functions in containers on said resources. \funcx{} enables 
-\name{} to execute metadata extraction functions at any registered and accessible \funcx{} endpoint.  \funcx{} enables \name{} to reliably 
-scale to thousands of nodes and simultaneously deploy metadata extraction tasks on arbitrary compute resources. 
-\funcx{} supports Singularity and Shifter, allowing \name{} extractors to be executed
-on various high performance computing systems. 
-
-
 \begin{figure}[t]
 	\centering
-	\includegraphics[scale=0.3]{figs/new-arch.png}
+	\includegraphics[scale=0.2]{figs/new-arch.png}
 	\caption{Overview of the \name{} architecture. For \textit{Site A} functions are transmitted to the remote resource and performed on local computing resources, returning metadata to the \name{} service. \textit{Site B} lacks suitable local
 	computing capabilities, requiring data to be staged to \name{} for analysis.}
 	\label{fig:arch}
 \end{figure}
 
-\kyle{The following is quite long and probably could just be said in a sentence when talking about the service}
 \name{} implements a comprehensive security model using Globus Auth~\cite{tuecke2016globus}. 
-All interactions with the \name{} Web service are secured with Globus Auth. 
-Users can authenticate with \name{} using one of 
-several hundred identity providers, including many institutions. 
-\name{} uses Globus Auth OAuth~2 flows to stage data on behalf
-of authenticated users. \name{} first verifies a user identity, requests an access
-token to perform data transfers on their behalf, and then uses Globus to stage
-data from remote storage to the \name{} extractor. 
-Finally, the resulting metadata are published into the search index using a Globus Search
-access token. The search index is configured with a \textit{visible\_to} field, restricting
-discovery to authenticated users.
+%All interactions with the \name{} Web service are secured with Globus Auth. 
+%Users can authenticate with \name{} using one of 
+%several hundred identity providers, including many institutions. 
+%\name{} uses Globus Auth OAuth~2 flows to stage data on behalf
+%of authenticated users. \name{} first verifies a user identity, requests an access
+%token to perform data transfers on their behalf, and then uses Globus to stage
+%data from remote storage to the \name{} extractor. 
+%Finally, the resulting metadata are published into the search index using a Globus Search
+%access token. The search index is configured with a \textit{visible\_to} field, restricting
+%discovery to authenticated users.
 
 
 \section{Evaluation Plan}
@@ -252,33 +252,29 @@ discovery to authenticated users.
 
 We intend to index real science use cases, particularly those in which individual data files are heterogeneous 
 or geographically distributed. For each, we intend to explore how to optimize the system across dimensions of 
-total compute time (SLAs), monetary cost, security requirements, and resource availability.
+total compute time (SLAs), monetary cost, security requirements, and resource availability.  We intend to evaluate 
+all such dimensions on a diversity of datasets, including the Carbon Dioxide Information Analysis Center (330+ GB, 10,000 
+unique file extensions of carbon dioxide data), the Materials Data Facility~\cite{ blaiszik2019mdf} (30+ TB, tens of millions of materials science files); 
+Petrel (4+ PB, 50,000+ files of cross-disciplinary data at Argonne National Lab), and Globus (over 20,000 unique, connected 
+endpoints containing hundreds of millions of files). \tyler{fact check Globus}
 
-We target the following real-world data sets: 
-
-We have already generated an index of the Carbon Dioxide Information Analysis Center (CDIAC), a collected dataset of 
-emissions data containing over 500,000 files (330+ GB) and 10,000 unique file extensions. The archive contains little 
-descriptive metadata and includes a number of irrelevant files, such as debug-cycle error logs and Windows Desktop 
-shortcuts.  We deployed this metadata extraction service in the cloud and moving the data to the cloud, but we expect 
-to see significant time and monetary savings by moving the data to the cloud.  
-
-The Materials Data Facility~\cite{blaiszik2016materials, blaiszik2019mdf}
-is a centralized hub for publishing, sharing, and discovering materials science data. 
-The MDF stores many terabytes of data from many different research groups, covering many disciplines of 
-materials science, and with a diverse range of file types.
-The downside of the expansive range of materials data held by the MDF 
-is that it can be difficult for users to find data relevant to their science.
-The MDF reduces the ``data discovery" challenge by hosting a search index that provides access to metadata from the 
-files (e.g., which material was simulated in a certain calculation).
-
-Petrel? Running out of room. 
-
-Globus~\cite{ananthakrishnan2018globus} manages petabytes of files over tens of thousands of individual user endpoints between research labs, 
-universities, industry, and home computing devices. Many \tyler{???} users elect to have all or part of their data publicly 
-shared with the rest of the Globus community. \kyle{private sharing could also be indexed} Xtract lends itself well to Globus as Globus already deploys an 
-endpoint on the compute node.  We intend to deploy the funcX endpoint as part of the Globus endpoint software, and 
-execute secure metadata extraction over all available petabytes. Globus is particularly useful in studying multi-site 
-metadata extraction, as users generally have multiple active endpoints. \tyler{more detail}. 
+%The Materials Data Facility~\cite{blaiszik2016materials, blaiszik2019mdf}
+%is a centralized hub for publishing, sharing, and discovering materials science data. 
+%The MDF stores many terabytes of data from many different research groups, covering many disciplines of 
+%materials science, and with a diverse range of file types.
+%The downside of the expansive range of materials data held by the MDF 
+%is that it can be difficult for users to find data relevant to their science.
+%The MDF reduces the ``data discovery" challenge by hosting a search index that provides access to metadata from the 
+%files (e.g., which material was simulated in a certain calculation).
+%
+%Petrel? Running out of room. 
+%
+%Globus~\cite{ananthakrishnan2018globus} manages petabytes of files over tens of thousands of individual user endpoints between research labs, 
+%universities, industry, and home computing devices. Many \tyler{???} users elect to have all or part of their data publicly 
+%shared with the rest of the Globus community. \kyle{private sharing could also be indexed} Xtract lends itself well to Globus as Globus already deploys an 
+%endpoint on the compute node.  We intend to deploy the funcX endpoint as part of the Globus endpoint software, and 
+%execute secure metadata extraction over all available petabytes. Globus is particularly useful in studying multi-site 
+%metadata extraction, as users generally have multiple active endpoints. \tyler{more detail}. 
 
 
 
