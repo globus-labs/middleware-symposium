@@ -95,11 +95,6 @@ To this end, we intend to create a searchable global index across a user's or mu
 <concept_significance>300</concept_significance>
 </concept>
 <concept>
-<concept_id>10002951.10003317.10003318.10003319</concept_id>
-<concept_desc>Information systems~Document structure</concept_desc>
-<concept_significance>100</concept_significance>
-</concept>
-<concept>
 <concept_id>10010405.10010497.10010500.10010503</concept_id>
 <concept_desc>Applied computing~Document metadata</concept_desc>
 <concept_significance>500</concept_significance>
@@ -110,9 +105,8 @@ To this end, we intend to create a searchable global index across a user's or mu
 \ccsdesc[500]{Information systems~Computing platforms}
 \ccsdesc[500]{Applied computing~Document metadata}
 \ccsdesc[300]{Information systems~Search engine indexing}
-\ccsdesc[100]{Information systems~Document structure}
 
-\keywords{data lakes, serverless, metadata extraction, file systems, materials science}
+\keywords{data lakes, serverless, metadata extraction, file systems}
 
 \maketitle
 
@@ -180,35 +174,36 @@ Finally, \S\ref{sec:conc} contains concluding remarks.
 \section{Approach}
 \label{sec:approach}
 
-\name{} is a serverless metadata extraction middleware that runs atop the \funcx{} serverless 
+\name{} will exist as a serverless metadata extraction middleware that runs atop the \funcx{} serverless 
 computing platform, allowing users to optimize metadata extraction workflows subject to 
-extraction time, cost, available compute allocations, and security policies. % (e.g., HIPAA). %KC prob best not to mention HIPAA.
+extraction time, cost, available compute allocations, and security policies.
+The \name{} architecture is shown in Figure~\ref{fig:arch}.
 The remainder 
-of this section outlines the various components of the system. The \name{} architecture is shown in Figure~\ref{fig:arch}.
+of this section outlines the existing \name{} prototype, and imminent goals for it. 
 
 \textbf{Metadata extractors} are functions that input a file or group of files, and output a metadata dictionary. 
-Each metadata extractor runs in a given runtime \kyle{runtime not defined}, or a container with all the required dependencies (i.e., files or 
-libraries) for the extractor to execute.  Our system currently provides a number of built-in extractors, including
-those to extract metadata from tabular, structured JSON- or XML-like, free text, and images. In future we work, 
+Each metadata extractor runs in a given container runtime with all required dependencies (i.e., files and 
+libraries).  Our system currently provides a number of built-in extractors, including
+those to extract metadata from tabular, structured JSON/XML data, free text, and images. In future we work, 
 we plan to support user-submitted metadata extractors, automatically generate runtimes based on inferred 
 dependency requirements, and also train \name{} to recognize when a user-submitted extractor 
 is appropriate for an arbitrary file. 
 
-The \textbf{\name{} service} dynamically applies a set of metadata extractors to files. 
-It does so by constructing a dynamic extractor workflows for each file 
+The \textbf{\name{} service} prototype dynamically applies a set of metadata extractors to files. 
+It does so by constructing a dynamic extractor workflow for each file 
 or group of files in a repository.  
-First, \name{} sends a crawler function to each endpoint specified by the user.  The crawler creates an 
-initial metadata dictionary for each file by finding the paths and physical properties (e.g., size, extension, hash) of each file or group of files
+First, \name{} sends a crawler function to endpoints specified by the user.  The crawler creates an 
+initial metadata dictionary for each file by finding physical properties (e.g., path, size, extension, hash) of each file or group of files
 in a given data set.  Once the initial dictionary is created, \name{} invokes a file type extractor on each file that determines probable downstream extractors for each file. We've shown in past work~\cite{skluzacek2018skluma} that feeding the first 512 bytes of a file into 
-a trained random forests model can predict a file's type with accuracy higher than the Unix `file' command (footnote why? \kyle{does this use magic bits?}) and in less time
-than trying and failing random extractors on a given file. Once a file type is determined the extractor executes the remaining library of extractors 
+a trained random forests model can predict a file's type with accuracy higher than the Unix `file' command (due to lack of information in `magic' bytes) and in less time
+than attempting to execute incorrect extractors on each file. Once file type is determined the extractor executes the remaining library of extractors 
 on each file by sending extractor functions to the endpoint, and sending additional extractors based on the returned metadata.  For instance, 
 a tabular data file with multiple lines of free text header (e.g., describing experimental setup) may be identified by the system as a tabular file, but 
 the metadata from the tabular 
 extractor will state the lines of the file that may be eligible for processing by a free text extractor (e.g., extract keywords from it).
 Requests to the web service are protected using Globus Auth~\cite{tuecke2016globus}, and all resulting metadata are stored to a searchable Globus Search index. 
 
-\funcx{} \textbf{endpoints} can be deployed across myriad compute providers, from personal computing devices (i.e., laptops), compatible 
+\funcx{} \textbf{endpoints} can currently be deployed across myriad compute providers, from personal computing devices (i.e., laptops), compatible 
 IoT devices, cloud providers, and HPC systems.  Endpoints build upon the Parsl~\cite{babuji2019parsl} parallel programming library to 
 provision compute resources on a given system, and to manage the execution of functions in containers on said resources. \funcx{} enables 
 \name{} to execute metadata extraction functions at any registered and accessible \funcx{} endpoint.  \funcx{} enables \name{} to reliably 
@@ -216,15 +211,7 @@ scale to thousands of nodes and simultaneously deploy metadata extraction tasks 
 \funcx{} supports Singularity and Shifter, allowing \name{} extractors to be executed
 on various high performance computing systems. 
 
-\kyle{Maybe the following paragraph should be moved to a future work? We should think 
-about how to structure this.  Should we make this more of a complete vision and then outline
-our prototype? Or outline our prototype and then describe where its going?} 
-Moreover, we 
-plan for \name{} to make data staging and resource provisioning decisions subject to a number of user-defined, real-world computing constraints. For instance, 
-perhaps in some cases there could exist an idle resource and transferring some data to a different edge device or HPC center could hasten 
-the overall execution time.  Perhaps we want to make data staging and allocation decisions that optimize for cost, so \name{} opts to transfer 
-data to cheaper (albeit likely slower or smaller) allocations for extraction.  Or perhaps certain data are subject to HIPAA, so we want to keep 
-those data on a VPC, but we can stage other data elsewhere to increase extraction performance. 
+
 
 \begin{figure}[t]
 	\centering
@@ -234,7 +221,7 @@ those data on a VPC, but we can stage other data elsewhere to increase extractio
 	\label{fig:arch}
 \end{figure}
 
-\name{} implements a comprehensive security model using Globus Auth~\cite{tuecke2016globus}. 
+%\name{} implements a comprehensive security model using Globus Auth~\cite{tuecke2016globus}. 
 %All interactions with the \name{} Web service are secured with Globus Auth. 
 %Users can authenticate with \name{} using one of 
 %several hundred identity providers, including many institutions. 
@@ -250,10 +237,13 @@ those data on a VPC, but we can stage other data elsewhere to increase extractio
 \section{Evaluation Plan}
 \label{sec:eval}
 
-We intend to index real science use cases, particularly those in which individual data files are heterogeneous 
-or geographically distributed. For each, we intend to explore how to optimize the system across dimensions of 
-total compute time (SLAs), monetary cost, security requirements, and resource availability.  We intend to evaluate 
-all such dimensions on a diversity of datasets, including the Carbon Dioxide Information Analysis Center (330+ GB, 10,000 
+In future work we plan to study how \name{} can self-optimize subject to real-world, user-defined constraints for heterogeneous data stored across multiple 
+endpoints.  Specifically, we plan to explore how augmenting metadata extraction workflows to stage data to idle or under-utilized resources could 
+find a globally optimal computing continuum with respect to user constraints of financial cost, computing time, desired compute usage on 
+given resource allocations, and security. 
+
+We intend to evaluate \name{}'s self-optimization strategies subject to a large number of constraint combinations across diversity of datasets. 
+These include the Carbon Dioxide Information Analysis Center (330+ GB, 10,000 
 unique file extensions of carbon dioxide data), the Materials Data Facility~\cite{ blaiszik2019mdf} (30+ TB, tens of millions of materials science files); 
 Petrel (4+ PB, 50,000+ files of cross-disciplinary data at Argonne National Lab), and Globus (over 20,000 unique, connected 
 endpoints containing hundreds of millions of files). \tyler{fact check Globus}
