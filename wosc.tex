@@ -92,12 +92,12 @@ To this end, \name{} creates a searchable centralized index across distributed d
 \section{Introduction}
 
 The rapid generation of data from IoT devices, scientific instruments, and personal computing devices presents unique 
-data management challenges. Currently data are spread across multiple machines, are generally siloed, and require 
-significant manual labor by users to create metadata that make the data on these devices searchable. Some~\cite{egan2003vizier, welter2013nhgri, irods, dataverse}  have created data catalogs from user-submitted metadata. These, however, are not scalable to current and future storage systems,
+data management challenges. Currently data exist across multiple machines, are generally siloed, and require 
+significant manual labor by users to create metadata that promote usability and searchability. Some~\cite{egan2003vizier, welter2013nhgri, irods, dataverse}  have created data catalogs from user-submitted metadata. These, however, are not scalable to current and future storage systems,
 as humans cannot possibly label billions of heterogeneous files.   
-In order to build a global metadata catalog over distributed big data, we require automated methods to crawl data, extract 
-metadata attributes for each file, and populate a global search index for users to find and access data. Others have developed end-to-end 
-automated metadata extraction systems, but they require that data be moved to a central service~\cite{skluzacek2018skluma, skluzacek2016klimatic, padhy2015brown, rodrigo2018sciencesearch} or do not have built-in scaling capabilities~\cite{mattmann2011tika}. 
+In order to build a global metadata catalog over distributed big data, we require automated methods to crawl data and extract 
+metadata attributes for each file. Others have developed end-to-end 
+automated metadata extraction systems, but require that data be moved to a central service~\cite{skluzacek2018skluma, skluzacek2016klimatic, padhy2015brown, rodrigo2018sciencesearch} or do not have built-in scaling capabilities~\cite{mattmann2011tika}. 
 In this work we strive to create a scalable, decentralized metadata extraction system that eschews the need to send files to a central service.  
 
 We present our prototype and vision for \name{},
@@ -108,16 +108,11 @@ provides an ideal model for managing the invocation of
 many short-running extractors on an arbitrarily large number of files. 
 \name{} uses the \funcx{} serverless supercomputing platform~\cite{chard2019serverless}
 to execute functions across diverse and distributed computing infrastructure.
-%We propose the use of FaaS for mapping the metadata extraction problem to a 
-%collection of granular metadata extractor functions. 
-%We describe how such a model can support the flexibility, scalability, and extensibility required
-%for scientific metadata extraction. 
 Rather than rely on commercial FaaS systems, we explore a novel distributed FaaS model 
 that overcomes the limitation of moving large amounts of data to the cloud. 
 Instead, we are able to push
 metadata extractors to the edge systems on which the scientific data reside. 
 The contributions of \name{} are the following: 
-%\name{} is advantageous to existing metadata extraction systems in that it: 
 \begin{itemize}
 \item Scalable across all user resources, from IoT to HPC. 
 \item Deployable at the edge, facilitating decentralized metadata extraction
@@ -126,13 +121,6 @@ The contributions of \name{} are the following:
 \item Automatically populates a search index of rich, searchable metadata. 
 \end{itemize}
 
-%\kyle{I'd like to see more about the novelty of the assembled pipelines in this list}
-
-
-%The remainder of this paper is organized as follows. 
-%\S\ref{sec:approach} presents our proposed architecture for \name{}. 
-%\S\ref{sec:eval} discusses metrics and workloads used to evaluate its performance. 
-%Finally, \S\ref{sec:conc} contains concluding remarks.
 
 
 \section{Approach}
@@ -174,7 +162,6 @@ provision compute resources on a given system, and to manage the execution of fu
 scale to thousands of nodes and simultaneously deploy metadata extraction tasks on arbitrary compute resources. 
 \funcx{} supports Singularity and Shifter, allowing \name{} extractors to be executed
 on various high performance computing systems. 
-
 
 
 \begin{figure}[t]
