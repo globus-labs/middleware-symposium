@@ -95,24 +95,12 @@ To this end, \name{} creates a searchable centralized index across distributed d
 The rapid generation of data from IoT devices, scientific instruments, and personal computing devices presents unique 
 data management challenges. Currently data are spread across multiple machines, are generally siloed, and require 
 significant manual labor by users to create metadata that make the data on these devices searchable. Some~\cite{egan2003vizier, welter2013nhgri, irods, dataverse}  have created data catalogs from user-submitted metadata. These, however, are not scalable to current and future storage systems,
-%science and enterprise 
-%exascale use cases, 
-as humans cannot possibly label billions of heterogeneous files. 
- %spanning exabytes and beyond
-%that would be expensive (or outright impossible) to transfer, stage, and process on small cluster file systems and personal computing devices.  
+as humans cannot possibly label billions of heterogeneous files.   
 In order to build a global metadata catalog over distributed big data, we require automated methods to crawl data, extract 
 metadata attributes for each file, and populate a global search index for users to find and access data. Others have developed end-to-end 
 automated metadata extraction systems, but they require that data be moved to a central service~\cite{skluzacek2018skluma, skluzacek2016klimatic, padhy2015brown, rodrigo2018sciencesearch} or do not have built-in scaling capabilities~\cite{mattmann2011tika}. 
 In this work we strive to create a scalable, decentralized metadata extraction system that eschews the need to send files to a central service.  
 
-%Serverless computing abstracts computing resources from the user, enabling
-%the deployment of applications without consideration for the physical and virtual infrastructure on which 
-%they are hosted. FaaS allows users to register programming functions with predefined input signatures.
-%Registered functions can subsequently be invoked many times
-%without the need to provision or scale any infrastructure.
-
-%\kyle{This paragraph repeats some of the previous one. I would vote to remove the previous paragraph}
-%\tyler{unplagiarize the first 3 sentences here}
 We present our prototype and vision for \name{},
 a serverless middleware that provides high-throughput and on-demand metadata 
 extraction, enabling the automated creation of rich, searchable data lakes from previously unsearchable data swamps. 
@@ -142,10 +130,10 @@ The contributions of \name{} are the following:
 %\kyle{I'd like to see more about the novelty of the assembled pipelines in this list}
 
 
-The remainder of this paper is organized as follows. 
-\S\ref{sec:approach} presents our proposed architecture for \name{}. 
-\S\ref{sec:eval} discusses metrics and workloads used to evaluate its performance. 
-Finally, \S\ref{sec:conc} contains concluding remarks.
+%The remainder of this paper is organized as follows. 
+%\S\ref{sec:approach} presents our proposed architecture for \name{}. 
+%\S\ref{sec:eval} discusses metrics and workloads used to evaluate its performance. 
+%Finally, \S\ref{sec:conc} contains concluding remarks.
 
 
 \section{Approach}
@@ -198,18 +186,6 @@ on various high performance computing systems.
 	\label{fig:arch}
 \end{figure}
 
-%\name{} implements a comprehensive security model using Globus Auth~\cite{tuecke2016globus}. 
-%All interactions with the \name{} Web service are secured with Globus Auth. 
-%Users can authenticate with \name{} using one of 
-%several hundred identity providers, including many institutions. 
-%\name{} uses Globus Auth OAuth~2 flows to stage data on behalf
-%of authenticated users. \name{} first verifies a user identity, requests an access
-%token to perform data transfers on their behalf, and then uses Globus to stage
-%data from remote storage to the \name{} extractor. 
-%Finally, the resulting metadata are published into the search index using a Globus Search
-%access token. The search index is configured with a \textit{visible\_to} field, restricting
-%discovery to authenticated users.
-
 
 \section{Evaluation Plan}
 \label{sec:eval}
@@ -237,9 +213,8 @@ complex data sets, leading to enhanced scientific and industrial progress.
 
 \begin{acks}
 
-This research is conducted under the guidance of Dr. Ian Foster and Dr. Kyle Chard of the 
-University of Chicago and Argonne National Lab. This work is made possible in part by the contributions
-of Ryan Chard, Yadu N. Babuji, Zhuozhao Li, and Ryan Wong. 
+This research is conducted under the guidance of Dr. Ian Foster and Dr. Kyle Chard, and with contributions
+from Dr. Ryan Chard, Dr. Zhuozhao Li, Yadu Babuji, and Ryan Wong. 
 
 
 \end{acks}
