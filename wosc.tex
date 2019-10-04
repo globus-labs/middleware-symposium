@@ -91,7 +91,7 @@ To this end, \name{} creates a searchable centralized index across distributed d
 
 \section{Introduction}
 
-The rapid generation of data from IoT devices, scientific instruments, and personal computing devices presents unique 
+The rapid generation of data from IoT devices, scientific instruments, and other computers presents unique 
 data management challenges. Currently data exist across multiple machines, are generally siloed, and require 
 significant manual labor by users to create metadata that promote usability and searchability. Some~\cite{egan2003vizier, welter2013nhgri, irods, dataverse}  have created data catalogs from user-submitted metadata. These, however, are not scalable to current and future storage systems,
 as humans cannot possibly label billions of heterogeneous files.   
@@ -102,7 +102,7 @@ In this work we strive to create a scalable, decentralized metadata extraction s
 
 We present our prototype and vision for \name{},
 a serverless middleware that provides high-throughput and on-demand metadata 
-extraction, enabling the automated creation of rich, searchable data lakes from previously unsearchable data swamps. 
+extraction, enabling the automated creation of rich, searchable data lakes from unsearchable data siloes. 
 Serverless computing, and specifically function as a service (FaaS),
 provides an ideal model for managing the invocation of
 many short-running extractors on an arbitrarily large number of files. 
@@ -112,7 +112,7 @@ Rather than rely on commercial FaaS systems, we explore a novel distributed FaaS
 that overcomes the limitation of moving large amounts of data to the cloud. 
 Instead, we are able to push
 metadata extractors to the edge systems on which the scientific data reside. 
-The contributions of \name{} are the following: 
+The primary contributions of \name{} are the following: 
 \begin{itemize}
 \item Scalable across all user resources, from IoT to HPC. 
 \item Deployable at the edge, facilitating decentralized metadata extraction
