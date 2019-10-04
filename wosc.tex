@@ -50,7 +50,6 @@
 
 \begin{abstract}
 
-\tyler{100 word limit}
 The rapid generation of data from distributed IoT devices, scientific instruments, and compute clusters presents
 unique challenges in data management. The influx of massive, increasingly-complex data causes repositories to become 
 siloed or generally unsearchable---both problems not currently well-addressed by distributed file systems.  
@@ -224,26 +223,7 @@ We intend to evaluate \name{}'s self-optimization strategies subject to a large 
 These include the Carbon Dioxide Information Analysis Center (330+ GB, 10,000 
 unique file extensions of carbon dioxide data), the Materials Data Facility~\cite{ blaiszik2019mdf} (30+ TB, tens of millions of materials science files); 
 Petrel (4+ PB, 50,000+ files of cross-disciplinary data at Argonne National Lab), and Globus (over 20,000 unique, connected 
-endpoints containing hundreds of millions of files). \tyler{fact check Globus}
-
-%The Materials Data Facility~\cite{blaiszik2016materials, blaiszik2019mdf}
-%is a centralized hub for publishing, sharing, and discovering materials science data. 
-%The MDF stores many terabytes of data from many different research groups, covering many disciplines of 
-%materials science, and with a diverse range of file types.
-%The downside of the expansive range of materials data held by the MDF 
-%is that it can be difficult for users to find data relevant to their science.
-%The MDF reduces the ``data discovery" challenge by hosting a search index that provides access to metadata from the 
-%files (e.g., which material was simulated in a certain calculation).
-%
-%Petrel? Running out of room. 
-%
-%Globus~\cite{ananthakrishnan2018globus} manages petabytes of files over tens of thousands of individual user endpoints between research labs, 
-%universities, industry, and home computing devices. Many \tyler{???} users elect to have all or part of their data publicly 
-%shared with the rest of the Globus community. \kyle{private sharing could also be indexed} Xtract lends itself well to Globus as Globus already deploys an 
-%endpoint on the compute node.  We intend to deploy the funcX endpoint as part of the Globus endpoint software, and 
-%execute secure metadata extraction over all available petabytes. Globus is particularly useful in studying multi-site 
-%metadata extraction, as users generally have multiple active endpoints. \tyler{more detail}. 
-
+endpoints containing hundreds of billions of files).
 
 
 \section{Conclusion}
