@@ -49,35 +49,14 @@
 \renewcommand{\shortauthors}{Skluzacek et al.}
 
 \begin{abstract}
-\tyler{max 100 words}
 
-%\tyler{GRAND-er. be more dramatic. }
-%\kyle{Maybe here you could say. Lots of data. Its created and stored in different places. 
-%We need to rethink the siloed and antiquated file system approach and instead think
-%of data in one global index of metadata (i.e., a data ocean -- just made up this term, not sure
-%if I like it). To do this we need to be able extract metadata
-%from where data exists. We propose a fluid, serverless middleware in which extractors
-%are dynamically determined and executed wherever it makes most
-%sense (e.g., at the edge, cloud, computing center, ...)}
-
-
-
-The rapid generation of data from IoT devices, scientific instruments, and user edge devices presents
-unique challenges in data management. Currently these data are distributed and generally siloed, 
-but the current capabilities of file systems do not enable users to search these distributed data collections.
- In this work we propose \name{}, a serverless middleware 
-that extracts metadata from files on heterogeneous edge computing resources, and conducting the extraction 
-where it makes the most sense, whether on the device itself, in the cloud, or on a dedicated cluster. 
-To this end, we intend to create a searchable global index across a user's or multiple users' data collections.  
-	
-	
-%In this work
-%we propose a middleware architecture called Xtract that leverages serverless 
-%computing to simultaneously extract metadata across a continuum of heterogeneous edge 
-%devices, from IoT to HPC to 
-%laptops. Xtract will enable the curation of an atomic multi-site data lake in which the
-%resources can make intelligently scale and move data in order to optimize for various 
-%SLAs.
+The rapid generation of data from distributed IoT devices, scientific instruments, and user edge devices presents
+unique challenges in data management. Unfortunately, this influx of data causes distributed data sets to become siloed or generally unsearchable. Present file system capabilities bar users from efficiently searching and organizing these increasingly 
+massive, complex data.  
+In this work we propose \name{}, a serverless middleware 
+to extract metadata from files across heterogeneous edge computing resources. Moreover, we intend to study how \name{} can
+automatically optimize subject to users' cost, time, compute allocation preference, and security constraints. 
+To this end, \name{} create a searchable centralized index across distributed data collections.
 
 
 \end{abstract}
@@ -217,7 +196,7 @@ on various high performance computing systems.
 	\centering
 	\includegraphics[scale=0.2]{figs/new-arch.png}
 	\caption{Overview of the \name{} architecture. For \textit{Site A} functions are transmitted to the remote resource and performed on local computing resources, returning metadata to the \name{} service. \textit{Site B} lacks suitable local
-	computing capabilities, requiring data to be staged to \name{} for analysis.}
+	computing capabilities, requiring data to be staged to \name{} for analysis. \tyler{make more readable in smaller format}}
 	\label{fig:arch}
 \end{figure}
 
