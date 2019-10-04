@@ -126,41 +126,38 @@ The primary contributions of \name{} are the following:
 \section{Approach}
 \label{sec:approach}
 
-\name{} will exist as a serverless metadata extraction middleware that runs atop the \funcx{} serverless 
+\name{} will exist as a serverless middleware that runs atop the \funcx{} serverless 
 computing platform, allowing users to optimize metadata extraction workflows subject to 
-extraction time, cost, available compute allocations, and security policies.
+a number of user constraints, including extraction time, cost, available compute allocations, and security policies.
 The \name{} architecture is shown in Figure~\ref{fig:arch}.
 The remainder 
-of this section outlines the existing \name{} prototype, and imminent goals for it. 
+of this section outlines the existing \name{} prototype, and imminent design goals for it.  
 
 \textbf{Metadata extractors} are functions that input a file or group of files, and output a metadata dictionary. 
 Each metadata extractor runs in a given container runtime with all required dependencies (i.e., files and 
-libraries).  Our system currently provides a number of built-in extractors, including
-those to extract metadata from tabular, structured JSON/XML data, free text, and images. In future we work, 
-we plan to support user-submitted metadata extractors, automatically generate runtimes based on inferred 
-dependency requirements, and also train \name{} to recognize when a user-submitted extractor 
-is appropriate for an arbitrary file. 
+libraries).  \name{} currently provides a number of built-in extractors, including
+those to identify a plethora of metadata from tabular files, structured data, free text, and images. In future work, 
+we plan to support user-submitted metadata extractors, automatically generate (and potentially share) runtime containers based on inferred 
+dependency requirements, and also train \name{} to recognize when in a metadata extraction workflow it is appropriate to apply a user-submitted extractor 
+to each file. 
 
 The \textbf{\name{} service} prototype dynamically applies a set of metadata extractors to files. 
-It does so by constructing a dynamic extractor workflow for each file 
-or group of files in a repository.  
-First, \name{} sends a crawler function to endpoints specified by the user.  The crawler creates an 
-initial metadata dictionary for each file by finding physical properties (e.g., path, size, extension, hash) of each file or group of files
-in a given data set.  Once the initial dictionary is created, \name{} invokes a file type extractor on each file that determines probable downstream extractors for each file. We've shown in past work~\cite{skluzacek2018skluma} that feeding the first 512 bytes of a file into 
-a trained random forests model can predict a file's type with accuracy higher than the Unix `file' command (due to lack of information in `magic' bytes) and in less time
-than attempting to execute incorrect extractors on each file. Once file type is determined the extractor executes the remaining library of extractors 
-on each file by sending extractor functions to the endpoint, and sending additional extractors based on the returned metadata.  For instance, 
+It does so by constructing a dynamic extractor workflow for each file in a repository.  
+First, \name{} sends a crawler function to endpoints administered by the user.  The crawler initializes a metadata dictionary for each file and populates it with
+its physical properties (e.g., path, size, extension, hash).  Once the initial dictionary is created, \name{} invokes a file type extractor on each file that determines probable downstream extractors for each file. We have shown in past work~\cite{skluzacek2018skluma} that feeding the first `n' bytes of a file as features into 
+a trained model can predict the appropriate first extractor functions to apply to a file, in significantly less time
+than attempting to execute incorrect extractors on each file. Once this first extractor function returns metadata, the \name{} service dynamically selects additional extractors to apply to 
+that file based on what was returned.  For instance, 
 a tabular data file with multiple lines of free text header (e.g., describing experimental setup) may be identified by the system as a tabular file, but 
-the metadata from the tabular 
-extractor will state the lines of the file that may be eligible for processing by a free text extractor (e.g., extract keywords from it).
+the resultant metadata will return the lines in the file that could benefit from having a keyword extractor applied to it, ultimately creating a richer metadata set.
 Requests to the web service are protected using Globus Auth~\cite{tuecke2016globus}, and all resulting metadata are stored to a searchable Globus Search index. 
 
-\funcx{} \textbf{endpoints} can currently be deployed across myriad compute providers, from personal computing devices (i.e., laptops), compatible 
-IoT devices, cloud providers, and HPC systems.  Endpoints build upon the Parsl~\cite{babuji2019parsl} parallel programming library to 
+\funcx{} \textbf{endpoints} can currently be deployed across myriad compute providers, from personal computing devices (i.e., laptops) to 
+IoT devices, cloud providers, and HPC centers.  Endpoints augment the Parsl~\cite{babuji2019parsl} parallel programming library to 
 provision compute resources on a given system, and to manage the execution of functions in containers on said resources. \funcx{} enables 
 \name{} to execute metadata extraction functions at any registered and accessible \funcx{} endpoint.  \funcx{} enables \name{} to reliably 
 scale to thousands of nodes and simultaneously deploy metadata extraction tasks on arbitrary compute resources. 
-\funcx{} supports Singularity and Shifter, allowing \name{} extractors to be executed
+\funcx{} supports Docker, Singularity, and Shifter, allowing \name{} extractors to be executed
 on various high performance computing systems. 
 
 
