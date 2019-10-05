@@ -54,7 +54,7 @@ unique challenges in data management. The influx of massive, increasingly-comple
 siloed or generally unsearchable---both problems not currently well-addressed by distributed file systems.  
 In this work we propose \name{}, a serverless middleware 
 to extract inscribed metadata from files across heterogeneous edge computing resources. Moreover, we intend to study how \name{} can
-automatically construct file extraction workflows subject to users' cost, time, compute allocation preference, and security constraints. 
+automatically construct file extraction workflows subject to users' cost, time, security, and compute allocation constraints. 
 To this end, \name{} creates a searchable centralized index across distributed data collections.
 
 
@@ -143,7 +143,7 @@ dependency requirements, and train \name{} to recognize when it is appropriate t
 The \textbf{\name{} service} prototype dynamically applies a set of metadata extractors to each file in the repository. 
 First, \name{} sends a crawler function to the data and populates a metadata dictionary for each file containing
 its physical properties (e.g., path, size, extension, hash).  Once the initial dictionary is created, \name{} invokes a file type extractor on each 
-file that determines probable downstream extractors for each file. We have shown that feeding 
+file that determines its probable downstream extractors. We have shown that feeding 
 the first `n' bytes of a file as features into 
 a trained model can predict the appropriate first extractor functions to apply to a file, in significantly less time
 than attempting to execute incorrect extractors on each file~\cite{skluzacek2018skluma}. Once this first extractor function returns metadata, the \name{} service dynamically selects additional extractors to apply based on this output.  For instance, 
@@ -187,9 +187,9 @@ endpoints containing hundreds of billions of files).
 \section{Conclusion}
 \label{sec:conc}
 
-\name{} enables users to search and organize large, distributed data sets by dynamically constructing metadata extraction 
-workflows for each file therein. \name{} is a serverless middleware that addresses data locality and scalability challenges by deploying compute endpoints on the edge
-devices and constructing extraction workflows subject to a number of user constraints. Such a system will enable companies, researchers, and individuals alike to more easily find, understand, and share increasingly 
+\name{} enables users to search and organize large, distributed data sets by employing dynamic metadata extraction workflows to construct a rich index over all files in the set.
+\name{} is a serverless middleware that addresses data locality and scalability challenges by deploying compute endpoints on the edge
+devices and constructing these workflows subject to a number of user constraints. Such a system will enable companies, researchers, and individuals alike to more easily find, understand, and share increasingly 
 complex data sets, leading to enhanced scientific and industrial progress. 
 
 
