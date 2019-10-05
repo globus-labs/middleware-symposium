@@ -136,13 +136,13 @@ of this section outlines the existing \name{} prototype, and imminent design goa
 \textbf{Metadata extractors} are functions that input a file or group of files, and output a metadata dictionary. 
 Each metadata extractor runs in a given container runtime with all required dependencies (i.e., files and 
 libraries).  \name{} currently provides a number of built-in extractors, including
-those to identify a plethora of metadata from tabular files, structured data, free text, and images. In future work, 
+those to identify null values in tabular files, nesting information on structured JSON or XML files, topics and keywords from free text, and location tags from map images, 
+among many others. In future work, 
 we plan to support user-submitted metadata extractors, automatically generate (and potentially share) runtime containers based on inferred 
 dependency requirements, and also train \name{} to recognize when in a metadata extraction workflow it is appropriate to apply a user-submitted extractor 
 to each file. 
 
-The \textbf{\name{} service} prototype dynamically applies a set of metadata extractors to files. 
-It does so by constructing a dynamic extractor workflow for each file in a repository.  
+The \textbf{\name{} service} prototype dynamically applies a set of metadata extractors to each file in the repository. 
 First, \name{} sends a crawler function to the data and populates a metadata dictionary for each file containing
 its physical properties (e.g., path, size, extension, hash).  Once the initial dictionary is created, \name{} invokes a file type extractor on each 
 file that determines probable downstream extractors for each file. We have shown in past work~\cite{skluzacek2018skluma} that feeding 
