@@ -95,8 +95,8 @@ The rapid generation of data from IoT devices, scientific instruments, and other
 data management challenges. Currently data exist across multiple machines, are generally siloed, and require 
 significant manual labor by users to create metadata that promote usability and searchability. Some~\cite{egan2003vizier, dataverse}  have created data catalogs from user-submitted metadata. These, however, are not scalable to current and future storage systems,
 as humans cannot possibly label billions of heterogeneous files.   
-In order to build a global metadata catalog over distributed big data, we require automated methods to crawl data and extract 
-metadata attributes for each file. Others have developed end-to-end 
+In order to build a global metadata catalog over distributed big data, we require automated methods to crawl file systems and extract 
+metadata attributes for each file therein. Others have developed end-to-end 
 automated metadata extraction systems, but require that data be moved to a central service~\cite{skluzacek2018skluma, skluzacek2016klimatic, padhy2015brown, rodrigo2018sciencesearch} or do not have built-in scaling capabilities~\cite{mattmann2011tika}. 
 In this work we strive to create a scalable, decentralized metadata extraction system that eschews transferring files to a central service.  
 
@@ -115,9 +115,9 @@ metadata extractors to the edge systems on which the scientific data reside.
 The primary contributions of \name{} are the following: 
 \begin{itemize}
 \item Scalable across all user resources, from IoT to HPC. 
-\item Deployable at the edge, facilitating decentralized metadata extraction
+\item Deployable at the edge, facilitating decentralized metadata extraction.
 \item Dynamically constructs unique extractor pipelines on diverse file types. 
-\item Intelligently executes data staging decisions based on user-supplied constraints. 
+\item Intelligently executes data staging decisions based on user-supplied constraints, including time, cost, compute allocation availability, and security. 
 \item Automatically populates a search index of rich, searchable metadata. 
 \end{itemize}
 
