@@ -98,7 +98,7 @@ as humans cannot possibly label billions of heterogeneous files.
 In order to build a global metadata catalog over distributed big data, we require automated methods to crawl data and extract 
 metadata attributes for each file. Others have developed end-to-end 
 automated metadata extraction systems, but require that data be moved to a central service~\cite{skluzacek2018skluma, skluzacek2016klimatic, padhy2015brown, rodrigo2018sciencesearch} or do not have built-in scaling capabilities~\cite{mattmann2011tika}. 
-In this work we strive to create a scalable, decentralized metadata extraction system that eschews the need to send files to a central service.  
+In this work we strive to create a scalable, decentralized metadata extraction system that eschews transferring files to a central service.  
 
 We present our prototype and vision for \name{},
 a serverless middleware that provides high-throughput and on-demand metadata 
@@ -143,14 +143,16 @@ to each file.
 
 The \textbf{\name{} service} prototype dynamically applies a set of metadata extractors to files. 
 It does so by constructing a dynamic extractor workflow for each file in a repository.  
-First, \name{} sends a crawler function to endpoints administered by the user.  The crawler initializes a metadata dictionary for each file and populates it with
-its physical properties (e.g., path, size, extension, hash).  Once the initial dictionary is created, \name{} invokes a file type extractor on each file that determines probable downstream extractors for each file. We have shown in past work~\cite{skluzacek2018skluma} that feeding the first `n' bytes of a file as features into 
+First, \name{} sends a crawler function to the data and populates a metadata dictionary for each file containing
+its physical properties (e.g., path, size, extension, hash).  Once the initial dictionary is created, \name{} invokes a file type extractor on each 
+file that determines probable downstream extractors for each file. We have shown in past work~\cite{skluzacek2018skluma} that feeding 
+the first `n' bytes of a file as features into 
 a trained model can predict the appropriate first extractor functions to apply to a file, in significantly less time
 than attempting to execute incorrect extractors on each file. Once this first extractor function returns metadata, the \name{} service dynamically selects additional extractors to apply to 
 that file based on what was returned.  For instance, 
 a tabular data file with multiple lines of free text header (e.g., describing experimental setup) may be identified by the system as a tabular file, but 
-the resultant metadata will return the lines in the file that could benefit from having a keyword extractor applied to it, ultimately creating a richer metadata set.
-Requests to the web service are protected using Globus Auth~\cite{tuecke2016globus}, and all resulting metadata are stored to a searchable Globus Search index. 
+the resultant metadata will denote parts of the file that would be appropriate candidates for processing by a free text extractor.
+\name{} protects requests to the web service using Globus Auth~\cite{tuecke2016globus}, and stores metadata to a Globus Search index. 
 
 \funcx{} \textbf{endpoints} can currently be deployed across myriad compute providers, from personal computing devices (i.e., laptops) to 
 IoT devices, cloud providers, and HPC centers.  Endpoints augment the Parsl~\cite{babuji2019parsl} parallel programming library to 
