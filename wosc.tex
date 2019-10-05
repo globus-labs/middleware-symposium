@@ -126,42 +126,39 @@ The primary contributions of \name{} are the following:
 \section{Approach}
 \label{sec:approach}
 
-\name{} will exist as a serverless middleware that runs atop the \funcx{} serverless 
-computing platform, allowing users to optimize metadata extraction workflows subject to 
-a number of user constraints, including extraction time, cost, available compute allocations, and security policies.
-The \name{} architecture is shown in Figure~\ref{fig:arch}.
-The remainder 
-of this section outlines the existing \name{} prototype, and imminent design goals for it.  
+\name{} is a serverless middleware that runs atop the \funcx{} serverless 
+computing platform, allowing users to automatically optimize metadata extraction workflows subject to 
+a number of user constraints, including extraction time, cost, available compute allocations, and security policies. 
+An example two-site architecture of \name{} is shown in Figure~\ref{fig:arch}, and the remainder of this section 
+details its various components and design goals.
 
 \textbf{Metadata extractors} are functions that input a file or group of files, and output a metadata dictionary. 
 Each metadata extractor runs in a given container runtime with all required dependencies (i.e., files and 
 libraries).  \name{} currently provides a number of built-in extractors, including
-those to identify null values in tabular files, nesting information on structured JSON or XML files, topics and keywords from free text, and location tags from map images, 
-among many others. In future work, 
+those to identify null values in tabular files, nesting patterns in structured XML files, topics and keywords from free text, and location tags from map images, 
+among others. In future work, 
 we plan to support user-submitted metadata extractors, automatically generate (and potentially share) runtime containers based on inferred 
-dependency requirements, and also train \name{} to recognize when in a metadata extraction workflow it is appropriate to apply a user-submitted extractor 
-to each file. 
+dependency requirements, and train \name{} to recognize when it is appropriate to apply user-submitted extractors in each file's metadata extraction workflow. 
 
 The \textbf{\name{} service} prototype dynamically applies a set of metadata extractors to each file in the repository. 
 First, \name{} sends a crawler function to the data and populates a metadata dictionary for each file containing
 its physical properties (e.g., path, size, extension, hash).  Once the initial dictionary is created, \name{} invokes a file type extractor on each 
-file that determines probable downstream extractors for each file. We have shown in past work~\cite{skluzacek2018skluma} that feeding 
+file that determines probable downstream extractors for each file. We have shown that feeding 
 the first `n' bytes of a file as features into 
 a trained model can predict the appropriate first extractor functions to apply to a file, in significantly less time
-than attempting to execute incorrect extractors on each file. Once this first extractor function returns metadata, the \name{} service dynamically selects additional extractors to apply to 
-that file based on what was returned.  For instance, 
-a tabular data file with multiple lines of free text header (e.g., describing experimental setup) may be identified by the system as a tabular file, but 
-the resultant metadata will denote parts of the file that would be appropriate candidates for processing by a free text extractor.
+than attempting to execute incorrect extractors on each file~\cite{skluzacek2018skluma}. Once this first extractor function returns metadata, the \name{} service dynamically selects additional extractors to apply based on this output.  For instance, 
+a tabular file with a multi-line free text header (e.g., describing experimental setup) is identified by the system as first requiring a tabular extractor, but 
+the resultant metadata will denote free text parts of the file that can benefit from keyword and topic extractors.
 \name{} protects requests to the web service using Globus Auth~\cite{tuecke2016globus}, and stores metadata to a Globus Search index. 
 
-\funcx{} \textbf{endpoints} can currently be deployed across myriad compute providers, from personal computing devices (i.e., laptops) to 
-IoT devices, cloud providers, and HPC centers.  Endpoints augment the Parsl~\cite{babuji2019parsl} parallel programming library to 
-provision compute resources on a given system, and to manage the execution of functions in containers on said resources. \funcx{} enables 
-\name{} to execute metadata extraction functions at any registered and accessible \funcx{} endpoint.  \funcx{} enables \name{} to reliably 
-scale to thousands of nodes and simultaneously deploy metadata extraction tasks on arbitrary compute resources. 
-\funcx{} supports Docker, Singularity, and Shifter, allowing \name{} extractors to be executed
-on various high performance computing systems. 
-
+\funcx{} \textbf{endpoints} are the edge computing fabric that provision compute resources and execute functions in container runtimes for files on the local file system.
+ Endpoints can currently be deployed across myriad compute providers such as IoT devices, cloud providers, and HPC centers.  
+Endpoints utilize the Parsl~\cite{babuji2019parsl} parallel programming library to 
+provision compute resources, and to manage the execution of functions in containers on said resources. \funcx{} enables 
+\name{} to execute metadata extraction functions at any registered and accessible \funcx{} endpoint, and reliably
+scale to deploy millions of metadata extraction functions to thousands of nodes spanning multiple compute locations. 
+%\funcx{} supports Docker, Singularity, and Shifter, allowing \name{} extractors to be executed
+%on various high performance computing systems. 
 
 \begin{figure}[t]
 	\centering
@@ -177,10 +174,10 @@ on various high performance computing systems.
 
 In future work we plan to study how \name{} can self-optimize subject to real-world, user-defined constraints for heterogeneous data stored across multiple 
 endpoints.  Specifically, we plan to explore how augmenting metadata extraction workflows to stage data to idle or under-utilized resources could 
-find a globally optimal computing continuum with respect to user constraints of financial cost, computing time, desired compute usage on 
-given resource allocations, and security.
+find globally optimal extraction strategies with respect to diverse user constraints of financial cost, computing time, security, and compute resource allocation 
+availability or volatility.
 
-We intend to evaluate \name{}'s self-optimization strategies subject to a large number of constraint combinations across diversity of datasets. 
+We intend to evaluate \name{}'s self-optimization strategies subject to a large number of constraint combinations across a diversity of datasets. 
 These include the Carbon Dioxide Information Analysis Center (330+ GB, 10,000+ 
 unique file extensions of carbon dioxide data), the Materials Data Facility~\cite{ blaiszik2019mdf} (30+ TB, tens of millions of materials science files); 
 Petrel (4+ PB, 50,000+ files of cross-disciplinary data at Argonne National Lab), and Globus (20,000+ unique, connected 
