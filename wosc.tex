@@ -37,7 +37,7 @@
 \begin{document}
 
 
-\title{Dredging a Data Lake: \\Decentralized Metadata Extraction at the Edge}
+\title{Dredging a Data Lake: Decentralized Metadata Extraction}
 
 \author{Tyler J. Skluzacek} 
 \affiliation{University of Chicago}
@@ -173,7 +173,7 @@ across thousands of nodes spanning multiple compute locations~\cite{chard2019ser
 
 \begin{figure}[t]
 	\centering
-	\includegraphics[scale=0.17]{figs/updated-fig.png}
+	\includegraphics[scale=0.35]{figs/updated-fig.png}
 	\caption{Overview of the \name{} architecture. For \textit{Site A} extractors are transmitted to the remote resource for execution on local computing resources, returning metadata to the \name{} service. 
     \textit{Site B} lacks suitable local computing capabilities, requiring data to be staged to \name{} for extraction.}
 	\label{fig:arch}
@@ -190,8 +190,8 @@ availability or volatility.
 
 We intend to evaluate \name{}'s self-optimization strategies subject to a large number of constraint combinations across a diversity of datasets. 
 These include the Carbon Dioxide Information Analysis Center (330+ GB, 10,000+ 
-unique file extensions of carbon dioxide data), the Materials Data Facility~\cite{ blaiszik2019mdf} (30+ TB, tens of millions of materials science files); 
-Petrel (4+ PB, 50,000+ files of cross-disciplinary data at Argonne National Lab), and Globus (20,000+ unique, connected 
+unique file extensions of carbon dioxide data); the Materials Data Facility~\cite{ blaiszik2019mdf} (30+ TB, tens of millions of materials science files); 
+Petrel (4+ PB, 50,000+ files of cross-disciplinary data at Argonne National Lab); and Globus (20,000+ unique, connected 
 endpoints containing hundreds of billions of files).
 
 
