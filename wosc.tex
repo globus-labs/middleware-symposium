@@ -32,17 +32,16 @@
 \newcommand{\name}{Xtract}
 \newcommand{\funcx}{$f$\kern-0.18em\emph{unc}\kern-0.05em X}
 
-\acmConference{Middleware Doctoral Symposium}{2019}{Davis, CA}
+\acmConference{20th International Middleware Conference Doctoral Symposium}{2019}{Davis, CA}
 
 \begin{document}
 
 
-\title{Leveraging Serverless to Dynamically Extract Metadata from Files at the Edge}
+\title{Dredging a Data Lake: Decentralized Metadata Extraction at the Edge}
 
 \author{Tyler J. Skluzacek} 
 \affiliation{University of Chicago}
 \email{skluzacek@uchicago.edu}
-
 
 
 \renewcommand{\shortauthors}{Skluzacek et al.}
@@ -53,7 +52,7 @@ The rapid generation of data from distributed IoT devices, scientific instrument
 unique challenges in data management. The influx of massive, increasingly-complex data causes repositories to become 
 siloed or generally unsearchable---both problems not currently well-addressed by distributed file systems.  
 In this work we propose \name{}, a serverless middleware 
-to extract inscribed metadata from files across heterogeneous edge computing resources. Moreover, we intend to study how \name{} can
+to extract inscribed metadata from files spread across heterogeneous edge computing resources. Moreover, we intend to study how \name{} can
 automatically construct file extraction workflows subject to users' cost, time, security, and compute allocation constraints. 
 To this end, \name{} creates a searchable centralized index across distributed data collections.
 
@@ -98,37 +97,37 @@ as humans cannot possibly label billions of heterogeneous files.
 In order to build a global metadata catalog over distributed big data, we require automated methods to crawl file systems and extract 
 metadata attributes for each file therein. Others have developed end-to-end 
 automated metadata extraction systems, but require that data be moved to a central service~\cite{skluzacek2018skluma, skluzacek2016klimatic, padhy2015brown, rodrigo2018sciencesearch} or do not have built-in scaling capabilities~\cite{mattmann2011tika}. 
-In this work we strive to create a scalable, decentralized metadata extraction system that eschews transferring files to a central service.  
+In this work we strive to create a scalable, decentralized metadata extraction system that eschews transferring files to a central service.
 
 We present our prototype and vision for \name{},
-a serverless middleware that provides high-throughput and on-demand metadata 
+a decentralized middleware that provides high-throughput and on-demand metadata 
 extraction, enabling the automated creation of rich, searchable data lakes from unsearchable data siloes. 
-Serverless computing, and specifically function as a service (FaaS),
+Function as a service (FaaS)
 provides an ideal model for managing the invocation of
 many short-running extractors on an arbitrarily large number of files. 
-\name{} uses the \funcx{} serverless supercomputing platform~\cite{chard2019serverless}
-to execute functions across diverse and distributed computing infrastructure.
-Rather than rely on commercial FaaS systems, we explore a novel distributed FaaS model 
-that overcomes the limitation of moving large amounts of data to the cloud. 
+The current \name{} implementation uses the \funcx{} serverless supercomputing platform~\cite{chard2019serverless}
+to execute functions across diverse and distributed computing infrastructure.  However, we envision a system that can 
+also plug into multiple commercial edge computing fabrics, such as Amazon Web Services IoT Greengrass or Google Cloud IoT. 
+Fortunately, the use of \funcx{} allows us to explore a novel distributed FaaS model 
+that overcomes the commercial cloud limitation of moving large amounts of data to the cloud. 
 Instead, we are able to push
 metadata extractors to the edge systems on which the scientific data reside. 
 The primary contributions of \name{} are the following: 
 \begin{itemize}
-\item Scalable across all user resources, from IoT to HPC. 
+\item Scalable across all user resources, from IoT to HPC, and across multiple edge computing fabrics. 
 \item Deployable at the edge, facilitating decentralized metadata extraction.
 \item Dynamically constructs unique extractor pipelines on diverse file types. 
 \item Intelligently executes data staging decisions based on user-supplied constraints, including time, cost, compute allocation availability, and security. 
-\item Automatically populates a search index of rich, searchable metadata. 
+\item Automatically populates a search index of rich metadata. 
 \end{itemize}
-
 
 
 \section{Approach}
 \label{sec:approach}
 
-\name{} is a serverless middleware that runs atop the \funcx{} serverless 
-computing platform, allowing users to automatically optimize metadata extraction workflows subject to 
-a number of user constraints, including extraction time, cost, available compute allocations, and security policies. 
+\name{} is a decentralized middleware that runs atop an edge computing fabric, such as \funcx{} or Greengrass IoT, that 
+enables users to automatically optimize metadata extraction workflows subject to 
+a number of individualized constraints, including extraction time, cost, available compute allocations, and security policies. 
 An example two-site architecture of \name{} is shown in Figure~\ref{fig:arch}, and the remainder of this section 
 details its various components and design goals.
 
@@ -136,7 +135,7 @@ details its various components and design goals.
 Each metadata extractor runs in a given container runtime with all required dependencies (i.e., files and 
 libraries).  \name{} currently provides a number of built-in extractors, including
 those to identify null values in tabular files, nesting patterns in structured XML files, topics and keywords from free text, and location tags from map images, 
-among others. In future work, 
+among others~\cite{skluzacek2019serverless}. In future work, 
 we plan to support user-submitted metadata extractors, automatically generate (and potentially share) runtime containers based on inferred 
 dependency requirements, and train \name{} to recognize when it is appropriate to apply user-submitted extractors in each file's metadata extraction workflow. 
 
@@ -151,14 +150,14 @@ a tabular file with a multi-line free text header (e.g., describing experimental
 the resultant metadata will denote free text parts of the file that can benefit from keyword and topic extractors.
 \name{} protects requests to the web service using Globus Auth~\cite{tuecke2016globus}, and stores metadata to a Globus Search index. 
 
-\funcx{} \textbf{endpoints} are the edge computing fabric that provision compute resources and execute functions in container runtimes for files on the local file system.
+\textbf{Endpoints} are the edge computing fabric that provision compute resources and execute functions in container runtimes for files on the local file system.
  Endpoints can currently be deployed across myriad compute providers such as IoT devices, cloud providers, and HPC centers.  
-Endpoints utilize the Parsl~\cite{babuji2019parsl} parallel programming library to 
-provision compute resources, and to manage the execution of functions in containers on said resources. \funcx{} enables 
-\name{} to execute metadata extraction functions at any registered and accessible \funcx{} endpoint, and reliably
+Endpoints deployed in \funcx{} utilize the Parsl~\cite{babuji2019parsl} parallel programming library to 
+provision compute resources, and to manage the execution of functions in containers on said resources. Endpoints enable 
+\name{} to execute metadata extraction functions at any registered and accessible endpoint. We~\cite{chard2019serverless} have shown that deploying \funcx{} 
+endpoints on HPC systems allows \name{} to reliably
 scale to deploy millions of metadata extraction functions to thousands of nodes spanning multiple compute locations. 
-%\funcx{} supports Docker, Singularity, and Shifter, allowing \name{} extractors to be executed
-%on various high performance computing systems. 
+
 
 \begin{figure}[t]
 	\centering
@@ -188,15 +187,16 @@ endpoints containing hundreds of billions of files).
 \label{sec:conc}
 
 \name{} enables users to search and organize large, distributed data sets by employing dynamic metadata extraction workflows to construct a rich index over all files in the set.
-\name{} is a serverless middleware that addresses data locality and scalability challenges by deploying compute endpoints on the edge
-devices and constructing these workflows subject to a number of user constraints. Such a system will enable companies, researchers, and individuals alike to more easily find, understand, and share increasingly 
+\name{} is a middleware that addresses data locality and scalability challenges by deploying compute endpoints on the edge
+devices and constructing these workflows subject to a number of user constraints. Such a system will enable researchers, companies, and individuals alike to more easily find, understand, and share increasingly 
 complex data sets, leading to enhanced scientific and industrial progress. 
 
 
 \begin{acks}
 
 This research is conducted under the guidance of Dr. Ian Foster and Dr. Kyle Chard, and with contributions
-from Dr. Ryan Chard, Dr. Zhuozhao Li, Yadu Babuji, and Ryan Wong. 
+from Dr. Ryan Chard, Dr. Zhuozhao Li, Yadu Babuji, and Ryan Wong. We gratefully acknowledge the use of compute 
+resources from the Jetstream cloud for science and engineering~\cite{jetstream}.
 
 
 \end{acks}
