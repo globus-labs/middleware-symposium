@@ -149,24 +149,26 @@ among others~\cite{skluzacek2019serverless}. In future work,
 we plan to support user-submitted metadata extractors, automatically generate (and potentially share) runtime containers based on inferred 
 dependency requirements, and train \name{} to recognize when it is appropriate to apply user-submitted extractors in each file's metadata extraction workflow. 
 
-The \textbf{\name{} service} prototype dynamically applies a set of metadata extractors to each file in the repository. 
+The \textbf{\name{} service} dynamically applies a set of metadata extractors to each file in the repository. 
 First, \name{} sends a crawler function to the data and populates a metadata dictionary for each file containing
-its physical properties (e.g., path, size, extension, hash).  Once the initial dictionary is created, \name{} invokes a file type extractor on each 
-file that determines its probable downstream extractors. We have shown that feeding 
-the first `n' bytes of a file as features into 
+its filesystem properties (e.g., path, size, extension).  Once the initial dictionary is created, \name{} invokes a file type extractor on each 
+file that is used to select downstream extractors. We have shown that feeding 
+the first $n$ bytes of a file as features into 
 a trained model can predict the appropriate first extractor functions to apply to a file, in significantly less time
-than attempting to execute incorrect extractors on each file~\cite{skluzacek2018skluma}. Once this first extractor function returns metadata, the \name{} service dynamically selects additional extractors to apply based on this output.  For instance, 
-a tabular file with a multi-line free text header (e.g., describing experimental setup) is identified by the system as first requiring a tabular extractor, but 
+than attempting to execute incorrect extractors on each file~\cite{skluzacek2018skluma}. Once this first extractor function returns metadata, the \name{} service dynamically selects additional extractors to apply based on the output.  For instance, 
+a tabular file with a multi-line free text header (e.g., describing experimental setup) is identified by \name{} as first requiring a tabular extractor, but 
 the resultant metadata will denote free text parts of the file that can benefit from keyword and topic extractors.
 \name{} protects requests to the web service using Globus Auth~\cite{tuecke2016globus}, and stores metadata to a Globus Search index. 
 
 \textbf{Endpoints} are the edge computing fabric that provision compute resources and execute functions in container runtimes for files on the local file system.
- Endpoints can currently be deployed across myriad compute providers such as IoT devices, cloud providers, and HPC centers.  
+ Endpoints can currently be deployed across myriad compute providers such as IoT devices, cloud instances, and clusters.  
 Endpoints deployed in \funcx{} utilize the Parsl~\cite{babuji2019parsl} parallel programming library to 
-provision compute resources, and to manage the execution of functions in containers on said resources. Endpoints enable 
-\name{} to execute metadata extraction functions at any registered and accessible endpoint. We~\cite{chard2019serverless} have shown that deploying \funcx{} 
+provision compute resources, and to manage the execution of functions in containers on provisioned resources. Endpoints enable 
+\name{} to execute metadata extraction functions at any registered and accessible endpoint. 
+We have shown that deploying \funcx{} 
 endpoints on HPC systems allows \name{} to reliably
-scale to deploy millions of metadata extraction functions to thousands of nodes spanning multiple compute locations. 
+scale to deploy millions of metadata extraction functions 
+across thousands of nodes spanning multiple compute locations~\cite{chard2019serverless}. 
 
 
 \begin{figure}[t]
