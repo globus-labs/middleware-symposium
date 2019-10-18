@@ -132,11 +132,14 @@ The primary contributions of \name{} are:
 \section{Approach}
 \label{sec:approach}
 
-\name{} is a decentralized middleware that runs atop an edge computing fabric, such as \funcx{} or Greengrass IoT, that 
-enables users to automatically optimize metadata extraction workflows subject to 
-a number of individualized constraints, including extraction time, cost, available compute allocations, and security policies. 
-An example two-site architecture of \name{} is shown in Figure~\ref{fig:arch}, and the remainder of this section 
-details its various components and design goals.
+\name{} is a decentralized middleware that provides for distributed metadata extraction. 
+The \name{} service plans dynamic metadata extraction pipelines, comprised of specialized
+metadata extractor functions, and coordinates the execution of those extractors
+either locally or at the edge, subject to various constraints. 
+%, including extraction time, cost, available compute allocations, and security policies. 
+An example two-site deployment of \name{} is shown in Figure~\ref{fig:arch}. 
+The remainder of this section 
+details \name{}'s core components and design goals.
 
 \textbf{Metadata extractors} are functions that input a file or group of files, and output a metadata dictionary. 
 Each metadata extractor runs in a given container runtime with all required dependencies (i.e., files and 
@@ -169,8 +172,8 @@ scale to deploy millions of metadata extraction functions to thousands of nodes 
 \begin{figure}[t]
 	\centering
 	\includegraphics[scale=0.17]{figs/updated-fig.png}
-	\caption{Overview of the \name{} architecture. For \textit{Site A} functions are transmitted to the remote resource and performed on local computing resources, returning metadata to the \name{} service. \textit{Site B} lacks suitable local
-	computing capabilities, requiring data to be staged to \name{} for analysis.}
+	\caption{Overview of the \name{} architecture. For \textit{Site A} extractors are transmitted to the remote resource for execution on local computing resources, returning metadata to the \name{} service. 
+    \textit{Site B} lacks suitable local computing capabilities, requiring data to be staged to \name{} for extraction.}
 	\label{fig:arch}
 \end{figure}
 
