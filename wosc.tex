@@ -37,7 +37,7 @@
 \begin{document}
 
 
-\title{Dredging a Data Lake: Decentralized Metadata Extraction at the Edge}
+\title{Dredging a Data Lake: \\Decentralized Metadata Extraction at the Edge}
 
 \author{Tyler J. Skluzacek} 
 \affiliation{University of Chicago}
@@ -102,28 +102,30 @@ we first require automated methods to crawl file systems and extract
 metadata for each file therein. 
 While others have developed end-to-end automated metadata extraction systems, 
 they require that data be moved to a central service~\cite{skluzacek2018skluma, skluzacek2016klimatic, padhy2015brown, rodrigo2018sciencesearch} or lack built-in scaling capabilities~\cite{mattmann2011tika}. 
-In this work we strive to create a scalable, decentralized metadata extraction system that eschews transferring files to a central service.
+In this work we strive to create a flexible, scalable, and decentralized metadata extraction system that 
+can be employed centrally or at the edge. 
 
 We present our prototype and vision for \name{},
 a decentralized middleware that provides high-throughput and on-demand metadata 
-extraction, enabling the automated creation of rich, searchable data lakes from unsearchable data siloes. 
-Function as a service (FaaS)
-provides an ideal model for managing the invocation of
+extraction, enabling the automated creation of rich, searchable data lakes from unsearchable data silos. 
+We leverage a Function as a service (FaaS) model for managing the invocation of
 many short-running extractors on an arbitrarily large number of files. 
 The current \name{} implementation uses the \funcx{} serverless supercomputing platform~\cite{chard2019serverless}
-to execute functions across diverse and distributed computing infrastructure.  However, we envision a system that can 
-also plug into multiple commercial edge computing fabrics, such as Amazon Web Services IoT Greengrass or Google Cloud IoT. 
-Fortunately, the use of \funcx{} allows us to explore a novel distributed FaaS model 
-that overcomes the commercial cloud limitation of moving large amounts of data to the cloud. 
-Instead, we are able to push
+to execute functions across diverse and distributed computing infrastructure.  
+The advantage of using \funcx{} is that it allows us to explore a novel distributed FaaS model 
+that overcomes the need to move large amounts of data to the cloud. 
+Instead, \name{} is able to push
 metadata extractors to the edge systems on which the scientific data reside. 
-The primary contributions of \name{} are the following: 
+We envision that \name{} could also use other edge computing fabrics, 
+such as Amazon Web Services IoT Greengrass or Google Cloud IoT. 
+The primary contributions of \name{} are: 
 \begin{itemize}
-\item Scalable across all user resources, from IoT to HPC, and across multiple edge computing fabrics. 
-\item Deployable at the edge, facilitating decentralized metadata extraction.
-\item Dynamically constructs unique extractor pipelines on diverse file types. 
+\item Scalable across distributed computing resources, including laptops, clusters, and edge devices.
+% IoT to HPC, and across multiple edge computing fabrics. 
+\item Flexible extraction model that can be deployed centrally or at the edge, facilitating decentralized metadata extraction.
+\item Supports dynamic construction of customized extractor pipelines for diverse file types. 
 \item Intelligently executes data staging decisions based on user-supplied constraints, including time, cost, compute allocation availability, and security. 
-\item Automatically populates a search index of rich metadata. 
+%\item Automatically populates a search index of rich metadata. 
 \end{itemize}
 
 
