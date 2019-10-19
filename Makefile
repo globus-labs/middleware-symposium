@@ -1,12 +1,12 @@
-wosc.pdf: #Figures/*.bib main.tex
-	pdflatex wosc.tex
-	bibtex wosc.aux
-	pdflatex wosc.tex
-	pdflatex wosc.tex
+docto.pdf: #Figures/*.bib main.tex
+	pdflatex docto.tex
+	bibtex docto.aux
+	pdflatex docto.tex
+	pdflatex docto.tex
 
 clean:
-	rm -f wosc.pdf
-	rm -f wosc.log
-	rm -f wosc.aux
-	rm -f wosc.bbl
-	rm -f wosc.blg
+	rm -f docto.pdf
+	rm -f docto.log
+	rm -f docto.aux
+	rm -f docto.bbl
+	rm -f docto.blg
