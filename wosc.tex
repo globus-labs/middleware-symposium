@@ -188,20 +188,24 @@ endpoints.  Specifically, we plan to explore how augmenting metadata extraction 
 find globally optimal extraction strategies with respect to diverse user constraints of financial cost, computing time, security, and compute resource allocation 
 availability or volatility.
 
-We intend to evaluate \name{}'s self-optimization strategies subject to a large number of constraint combinations across a diversity of datasets. 
+We intend to evaluate \name{}'s self-optimization strategies subject to a large number of constraint combinations across a diverse set of datasets. 
 These include the Carbon Dioxide Information Analysis Center (330+ GB, 10,000+ 
-unique file extensions of carbon dioxide data); the Materials Data Facility~\cite{ blaiszik2019mdf} (30+ TB, tens of millions of materials science files); 
-Petrel (4+ PB, 50,000+ files of cross-disciplinary data at Argonne National Lab); and Globus (20,000+ unique, connected 
-endpoints containing hundreds of billions of files).
+unique file extensions of carbon dioxide data); 
+the Materials Data Facility~\cite{blaiszik2019mdf} (30+ TB, tens of millions of materials science files); 
+Petrel (4+ PB, 50,000+ files of cross-disciplinary data at Argonne National Lab); 
+and Globus (20,000+ unique, connected endpoints containing hundreds of billions of files).
 
 
 \section{Conclusion}
 \label{sec:conc}
 
-\name{} enables users to search and organize large, distributed data sets by employing dynamic metadata extraction workflows to construct a rich index over all files in the set.
-\name{} is a middleware that addresses data locality and scalability challenges by deploying compute endpoints on the edge
-devices and constructing these workflows subject to a number of user constraints. Such a system will enable researchers, companies, and individuals alike to more easily find, understand, and share increasingly 
-complex data sets, leading to enhanced scientific and industrial progress. 
+%\name{} enables users to search and organize large, distributed data sets by employing dynamic metadata extraction workflows to construct a rich index over all files in the set.
+\name{} is a metadata extraction middleware that addresses data locality and 
+scalability challenges by deploying metadata extractors to edge
+devices and constructing extraction workflows subject to a number of user constraints. 
+\name{} will enable researchers, companies, and individuals alike to more easily 
+discover, organize, and understand increasingly large, complex, and distribtued 
+data, leading to enhanced scientific and industrial progress. 
 
 
 \begin{acks}
