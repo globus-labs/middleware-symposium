@@ -183,17 +183,21 @@ across thousands of nodes spanning multiple compute locations~\cite{chard2019ser
 \section{Evaluation Plan}
 \label{sec:eval}
 
-In future work we plan to study how \name{} can self-optimize subject to real-world, user-defined constraints for heterogeneous data stored across multiple 
-endpoints.  Specifically, we plan to explore how augmenting metadata extraction workflows to stage data to idle or under-utilized resources could 
-find globally optimal extraction strategies with respect to diverse user constraints of financial cost, computing time, security, and compute resource allocation 
+In future work we plan to study how \name{} can optimize the creation of extraction workflows
+and deployment of extractors subject to user-defined constraints. 
+% heterogeneous data stored across multiple endpoints.  
+Specifically, we plan to explore how metadata extraction workflows can be augmented to 
+place extractors on, or stage data to, idle or under-utilized resources. 
+We will also investigate globally optimal extraction strategies with respect to diverse user constraints of financial cost, computing time, security, and compute resource allocation 
 availability or volatility.
 
-We intend to evaluate \name{}'s self-optimization strategies subject to a large number of constraint combinations across a diverse set of datasets. 
-These include the Carbon Dioxide Information Analysis Center (330+ GB, 10,000+ 
-unique file extensions of carbon dioxide data); 
+We intend to evaluate \name{}'s performance and optimization strategies 
+%subject to a large number of constraint combinations 
+across a diverse set of datasets. 
+These include the Carbon Dioxide Information Analysis Center (330+ GB, 10,000+ unique file extensions of carbon dioxide data); 
 the Materials Data Facility~\cite{blaiszik2019mdf} (30+ TB, tens of millions of materials science files); 
 Petrel (4+ PB, 50,000+ files of cross-disciplinary data at Argonne National Lab); 
-and Globus (20,000+ unique, connected endpoints containing hundreds of billions of files).
+and Globus-accessible endpoints (20,000+ unique endpoints containing hundreds of billions of files).
 
 
 \section{Conclusion}
